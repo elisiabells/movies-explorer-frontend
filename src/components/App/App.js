@@ -1,12 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 
-import Main from './components/Main';
-import Movies from './components/Movies';
-import SavedMovies from './components/SavedMovies';
-import Profile from './components/Profile';
-import Login from './components/Login';
-import Register from './components/Register';
+import Main from '../Main/Main';
+import Movies from '../Movies/Movies';
+import SavedMovies from '../SavedMovies/SavedMovies';
+import Profile from '../Profile/Profile';
+import Login from '../Login/Login';
+import Register from '../Register/Register';
+// import Preloader from "../Movies/Preloader/Preloader";
+// import Header from "../Header/Header";
+// import Footer from "../Footer/Footer";
 
 function App() {
   return (
@@ -21,15 +24,15 @@ function App() {
           <Link to="/profile">Аккаунт</Link>
         </nav>
 
-        <Switch>
-          <Route path="/" exact component={Main} />
-          <Route path="/movies" component={Movies} />
-          <Route path="/saved-movies" component={SavedMovies} />
-          <Route path="/profile" component={Profile} />
-          <Route path="/signin" component={Login} />
-          <Route path="/signup" component={Register} />
-          <Route render={() => <h1>404: Страница не найдена</h1>} />
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/saved-movies" element={<SavedMovies />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/signin" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+          <Route path="*" element={<h1>404: Страница не найдена</h1>} />
+        </Routes>
       </div>
     </Router>
   );
