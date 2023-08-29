@@ -1,0 +1,12 @@
+.saved-movies {
+   display: flex;
+   flex-direction: column;
+   height: 100vh;
+}
+
+@media screen and (max-width: 670px) {
+   .saved-movies {
+      justify-content: space-between;
+      height: auto;
+   }
+}

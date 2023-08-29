@@ -1,0 +1,125 @@
+.profile {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   height: 100vh;
+   margin-bottom: 80px;
+}
+
+.profile__title {
+   font-size: 24px;
+   font-weight: 500;
+   line-height: 30px;
+   margin-top: 75px;
+   margin-bottom: 100px;
+}
+
+.profile__form {
+   display: flex;
+   flex-direction: column;
+   margin-top: 23px;
+   gap: 19px;
+}
+
+.profile__form_item {
+   display: flex;
+   justify-content: space-between;
+   width: 420px;
+}
+
+.profile__form_label {
+   color: #000;
+   font-size: 11px;
+   font-weight: 500;
+   line-height: 13px;
+   margin-left: 7px;
+}
+
+.profile__form_input {
+   color: #000;
+   font-size: 11px;
+   font-weight: 500;
+   line-height: 13px;
+   margin-right: 7px;
+   white-space: nowrap;
+   overflow: hidden;
+   border: none;
+   outline: none;
+}
+
+.profile__form_name {
+   border-bottom: 1px solid #E8E8E8;
+   padding-bottom: 15px;
+}
+
+.profile__form_button {
+   font-size: 13px;
+   font-weight: 400;
+   line-height: 16px;
+   border: none;
+   padding: 0;
+   background-color: transparent;
+   margin-top: 200px;
+}
+
+.profile__form_button:hover {
+   cursor: pointer;
+   opacity: 0.8;
+   transition: opacity 0.2s;
+}
+
+.profile__button-exit {
+   font-size: 13px;
+   font-weight: 500;
+   line-height: 16px;
+   color: #FF4062;
+   border: none;
+   padding: 0;
+   background-color: transparent;
+   margin-top: 16px;
+   text-decoration: none;
+}
+
+.profile__button-exit:hover {
+   cursor: pointer;
+   opacity: 0.8;
+   transition: opacity 0.2s;
+}
+
+@media screen and (max-width: 860px) {
+   .profile__title {
+      margin-top: 235px;
+      margin-bottom: 75px;
+   }
+
+   .profile__form_button {
+      margin-top: 190px;
+   }
+}
+
+@media screen and (max-width: 500px) {
+   .profile__title {
+      margin-top: 82px;
+      margin-bottom: 59px;
+   }
+
+   .profile__form_item {
+      width: 260px;
+   }
+
+   .profile__form_label {
+      margin-left: 0;
+   }
+
+   .profile__form_input {
+      margin-right: 0;
+   }
+
+   .profile__form_button {
+      margin-top: 358px;
+   }
+
+   .profile__button-exit {
+      margin-bottom: 50px;
+   }
+}
