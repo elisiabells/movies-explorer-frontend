@@ -1,12 +1,24 @@
 .saved-movies {
    display: flex;
    flex-direction: column;
-   height: 100vh;
+   min-height: 100vh;
+   margin-bottom: 100px;
 }
 
-@media screen and (max-width: 670px) {
+@media screen and (max-width: 1160px) {
    .saved-movies {
-      justify-content: space-between;
-      height: auto;
+      margin-bottom: 150px;
+   }
+}
+
+@media screen and (max-width: 768px) {
+   .saved-movies {
+      margin-bottom: 243px;
+   }
+}
+
+@media screen and (max-width: 660px) {
+   .saved-movies {
+      margin-bottom: 205px;
    }
 }

@@ -14,16 +14,19 @@ function AuthForm({ type, onSubmit }) {
                {type === 'register' && (
                   <>
                      <label className='auth-form__label'>Имя</label>
-                     <input className='auth-form__input' type='text' placeholder='Имя' />
+                     <input className='auth-form__input' type='text' placeholder='Имя' required />
                   </>
                )}
                <label className='auth-form__label'>E-mail</label>
-               <input className='auth-form__input' type='email' placeholder='E-mail' />
+               <input className='auth-form__input' type='email' placeholder='E-mail' required />
                <label className='auth-form__label'>Пароль</label>
-               <input className='auth-form__input' type='password' placeholder='Пароль' />
-               <button className={`auth-form__button ${type === 'login' ? 'auth-form__login-button' : ''}`} type='submit'>
+               <input className='auth-form__input' type='password' placeholder='Пароль' required />
+               <button
+                  className={`auth-form__button ${type === 'login' ? 'auth-form__login-button auth-form__button-signin' : ''}`}
+                  type='submit'>
                   {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
                </button>
+
             </form>
             <p className='auth-form__footer'>
                {type === 'register'

@@ -19,17 +19,18 @@ function App() {
   return (
     <div className='page'>
       {!hideForRoutes.includes(location.pathname) && <Header loggedIn={loggedIn} />}
-      <Routes>
-        <Route path='/' element={<Main />} />
-
-        <Route path='/movies' element={<Movies />} />
-        <Route path='/saved-movies' element={<SavedMovies />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/sign-in' element={<Login />} />
-        <Route path='/sign-up' element={<Register />} />
-        <Route path='/not-found' element={<NotFound />} />
-        <Route path='*' element={<Navigate to='/not-found' />} />
-      </Routes>
+      <main>
+        <Routes>
+          <Route path='/' element={<Main />} />
+          <Route path='/movies' element={<Movies />} />
+          <Route path='/saved-movies' element={<SavedMovies />} />
+          <Route path='/profile' element={<Profile />} />
+          <Route path='/sign-in' element={<Login />} />
+          <Route path='/sign-up' element={<Register />} />
+          <Route path='/not-found' element={<NotFound />} />
+          <Route path='*' element={<Navigate to='/not-found' />} />
+        </Routes>
+      </main>
       {!hideForRoutes.includes(location.pathname) && <Footer />}
     </div>
   );

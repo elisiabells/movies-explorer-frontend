@@ -47,7 +47,8 @@
 
 .portfolio__link:hover {
    opacity: 0.7;
-   transition: opacity 0.2s;
+   transition: opacity 0.3s;
+   cursor: pointer;
 }
 
 .portfolio__link-arrow {

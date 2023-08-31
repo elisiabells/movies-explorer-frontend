@@ -1,18 +1,19 @@
 .movies-list {
    max-width: 90%;
    display: grid;
-   grid-template-columns: repeat(3, 1fr);
    column-gap: 30px;
-   row-gap: 50px;
+   row-gap: 90px;
    margin: 0 auto;
    margin-top: 80px;
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   grid-auto-rows: minmax(201px, auto);
 }
 
 .movies-list__more {
    display: flex;
    justify-content: center;
    max-width: 1140px;
-   margin: 77px auto 80px;
+   margin: 105px auto 80px;
 }
 
 .movies-list__button {
@@ -27,17 +28,16 @@
 }
 
 .movies-list__button:hover {
-   cursor: pointer;
    opacity: 0.8;
+   transition: opacity 0.2s;
+   cursor: pointer;
 }
 
 @media screen and (max-width: 1160px) {
    .movies-list {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(4, 1fr);
-      margin-top: 79px;
-      column-gap: 100px;
-      row-gap: 88px;
+      grid-template-columns: repeat(2, minmax(290px, 1fr));
+      row-gap: 47px;
+      max-width: 1040px;
    }
 
    .movies-list>.movies-card:nth-child(n+9) {
@@ -47,11 +47,9 @@
 
 @media screen and (max-width: 960px) {
    .movies-list {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(4, 1fr);
       margin-top: 79px;
-      column-gap: 20px;
-      row-gap: 88px;
+      column-gap: 30px;
+      row-gap: 80px;
    }
 
    .movies-list>.movies-card:nth-child(n+9) {
@@ -59,22 +57,32 @@
    }
 
    .movies-list__more {
-      margin: 102px auto 119px;
+      margin: 92px auto 118px
    }
 }
 
-@media screen and (max-width: 760px) {
+@media screen and (max-width: 768px) {
+   .movies-list {
+      margin-left: 30px;
+      grid-template-columns: repeat(2, minmax(290px, 1fr));
+      row-gap: 77px;
+      max-width: 708px;
+   }
+}
+
+@media screen and (max-width: 759px) {
    .movies-list {
       width: auto;
+      margin-left: auto;
+      column-gap: 40px;
    }
 }
 
 @media screen and (max-width: 660px) {
    .movies-list {
-      grid-template-columns: repeat(1, 1fr);
-      grid-template-rows: repeat(5, 1fr);
-      row-gap: 70px;
-      margin-top: 50px;
+      grid-template-columns: repeat(1, minmax(290px, 1fr));
+      row-gap: 39px;
+      max-width: 300px;
    }
 
    .movies-list>.movies-card:nth-child(n+6) {
@@ -87,5 +95,15 @@
 
    .movies-list__button {
       width: 240px;
+   }
+}
+
+@media screen and (max-width: 350px) {
+   .movies-list {
+      margin-top: 45px;
+   }
+
+   .movies-list__more {
+      margin: 60px auto 135px;
    }
 }

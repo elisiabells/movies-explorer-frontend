@@ -35,7 +35,8 @@
 
 .header__link:hover {
    opacity: 0.7;
-   transition: opacity 0.2s;
+   transition: opacity 0.3s;
+   cursor: pointer;
 }
 
 .header__signup-link {
@@ -56,6 +57,7 @@
 .header__signin-link:hover {
    opacity: 0.8;
    transition: opacity 0.2s;
+   cursor: pointer;
 }
 
 .header__burger-menu-button {
@@ -65,6 +67,7 @@
 .header__burger-menu-button:hover {
    opacity: 0.8;
    transition: opacity 0.2s;
+   cursor: pointer;
 }
 
 @media (max-width: 768px) {

@@ -2,8 +2,6 @@
    display: flex;
    flex-direction: column;
    align-items: center;
-   height: 100vh;
-   margin-bottom: 80px;
 }
 
 .profile__title {
@@ -63,9 +61,9 @@
 }
 
 .profile__form_button:hover {
-   cursor: pointer;
    opacity: 0.8;
    transition: opacity 0.2s;
+   cursor: pointer;
 }
 
 .profile__button-exit {
@@ -78,6 +76,7 @@
    background-color: transparent;
    margin-top: 16px;
    text-decoration: none;
+   margin-bottom: 50px;
 }
 
 .profile__button-exit:hover {
@@ -99,7 +98,7 @@
 
 @media screen and (max-width: 500px) {
    .profile__title {
-      margin-top: 82px;
+      margin-top: 70px;
       margin-bottom: 59px;
    }
 

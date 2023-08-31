@@ -18,32 +18,46 @@ function Header({ loggedIn = true }) {
    }
 
    const renderHeader = () => {
-      return loggedIn ? (
-         <>
+      if (location.pathname === '/') {
+         return (
             <div className='header__actions'>
-               <Link to='/'><img src={logo} alt='Логотип' className='header__logo' /></Link>
+               <img src={logo} alt='Логотип' className='header__logo' />
                <div className='header__navigation'>
-                  <Navigation isWhiteBackground={isWhiteBackground} />
+                  <Link to='/sign-up' className='header__signup-link header__link'>Регистрация</Link>
+                  <Link to='/sign-in' className='header__signin-link header__link'>Войти</Link>
                </div>
-               <button
-                  className='header__burger-menu-button'
-                  onClick={handleOpenBurgerMenu}
+            </div>
+         );
+      } else if (loggedIn) {
+         return (
+            <>
+               <div className='header__actions'>
+                  <Link to='/'><img src={logo} alt='Логотип' className='header__logo' /></Link>
+                  <div className='header__navigation'>
+                     <Navigation isWhiteBackground={isWhiteBackground} />
+                  </div>
+                  <button
+                     className='header__burger-menu-button'
+                     onClick={handleOpenBurgerMenu}
+                  />
+               </div>
+               <BurgerMenu
+                  isOpen={isBurgerMenuOpen}
+                  onCloseBurgerMenu={handleCloseBurgerMenu}
                />
+            </>
+         );
+      } else {
+         return (
+            <div className='header__actions'>
+               <img src={logo} alt='Логотип' className='header__logo' />
+               <div className='header__navigation'>
+                  <Link to='/sign-up' className='header__signup-link header__link'>Регистрация</Link>
+                  <Link to='/sign-in' className='header__signin-link header__link'>Войти</Link>
+               </div>
             </div>
-            <BurgerMenu
-               isOpen={isBurgerMenuOpen}
-               onCloseBurgerMenu={handleCloseBurgerMenu}
-            />
-         </>
-      ) : (
-         <div className='header__actions'>
-            <img src={logo} alt='Логотип' className='header__logo' />
-            <div className='header__navigation'>
-               <Link to='/sign-up' className='header__signup-link header__link'>Регистрация</Link>
-               <Link to='/sign-in' className='header__signin-link header__link'>Войти</Link>
-            </div>
-         </div>
-      );
+         );
+      }
    };
 
    const backgroundColor = location.pathname === '/' ? '#F3C1F8' : '#fff';
