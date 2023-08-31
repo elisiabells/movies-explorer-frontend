@@ -2,7 +2,7 @@
    display: flex;
    flex-direction: column;
    min-height: 100vh;
-   margin-bottom: 100px;
+   /* margin-bottom: 100px; */
 }
 
 @media screen and (max-width: 1160px) {
@@ -19,6 +19,12 @@
 
 @media screen and (max-width: 660px) {
    .saved-movies {
-      margin-bottom: 205px;
+      margin-bottom: 190px;
+   }
+}
+
+@media screen and (max-width: 320px) {
+   .saved-movies .movies-list>.movies-card:nth-child(n+3) {
+      display: none;
    }
 }
