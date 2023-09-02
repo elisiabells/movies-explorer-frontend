@@ -14,7 +14,7 @@ function SavedMovies() {
   return (
     <div className='saved-movies'>
       <SearchForm />
-      <div className="movies-list">
+      <div className="movies-card-list__container">
         {savedMovies.map(movie => (
           <MovieCard key={movie.movieId} movie={movie} isSavedMoviePage={true} onDelete={handleDeleteMovie} />
         ))}

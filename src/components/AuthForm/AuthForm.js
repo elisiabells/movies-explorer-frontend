@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 
 function AuthForm({ type, onSubmit }) {
    return (
-      <div className='auth-form__container'>
-         <div className='auth-form'>
+      <div className='auth-form'>
+         <div className='auth-form__container'>
             <Link to='/'><img src={logo} alt='Логотип приложения' className='auth-form__logo' /></Link>
             <h2 className='auth-form__title'>
                {type === 'register' ? 'Добро пожаловать!' : 'Рады видеть!'}
             </h2>
-            <form onSubmit={onSubmit} className='auth-form__form'>
+            <form onSubmit={onSubmit} className='auth-form__form-content'>
                {type === 'register' && (
                   <>
                      <label className='auth-form__label'>Имя</label>
@@ -22,13 +22,12 @@ function AuthForm({ type, onSubmit }) {
                <label className='auth-form__label'>Пароль</label>
                <input className='auth-form__input' type='password' placeholder='Пароль' required />
                <button
-                  className={`auth-form__button ${type === 'login' ? 'auth-form__login-button auth-form__button-signin' : ''}`}
+                  className={`auth-form__button ${type === 'login' ? 'auth-form__button--login' : ''}`}
                   type='submit'>
                   {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
                </button>
-
             </form>
-            <p className='auth-form__footer'>
+            <p className='auth-form__footer-text'>
                {type === 'register'
                   ? 'Уже зарегистрированы? '
                   : 'Ещё не зарегистрированы? '}

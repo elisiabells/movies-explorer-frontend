@@ -19,7 +19,6 @@ function App() {
   return (
     <div className='page'>
       {!hideForRoutes.includes(location.pathname) && <Header loggedIn={loggedIn} />}
-      <main>
         <Routes>
           <Route path='/' element={<Main />} />
           <Route path='/movies' element={<Movies />} />
@@ -30,7 +29,6 @@ function App() {
           <Route path='/not-found' element={<NotFound />} />
           <Route path='*' element={<Navigate to='/not-found' />} />
         </Routes>
-      </main>
       {!hideForRoutes.includes(location.pathname) && <Footer />}
     </div>
   );

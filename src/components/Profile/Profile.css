@@ -19,13 +19,13 @@
    gap: 19px;
 }
 
-.profile__form_item {
+.profile__form-item {
    display: flex;
    justify-content: space-between;
    width: 420px;
 }
 
-.profile__form_label {
+.profile__label {
    color: #000;
    font-size: 11px;
    font-weight: 500;
@@ -33,7 +33,7 @@
    margin-left: 7px;
 }
 
-.profile__form_input {
+.profile__input {
    color: #000;
    font-size: 11px;
    font-weight: 500;
@@ -42,15 +42,23 @@
    white-space: nowrap;
    overflow: hidden;
    border: none;
-   outline: none;
+   text-align: end;
+   width: 80%;
+   padding: 0;
 }
 
-.profile__form_name {
+.profile__input:focus {
+   outline: none;
+   color: #000;
+   box-shadow: 0 0 5px #F4C2C2;
+}
+
+.profile__name {
    border-bottom: 1px solid #E8E8E8;
    padding-bottom: 15px;
 }
 
-.profile__form_button {
+.profile__button {
    font-size: 13px;
    font-weight: 400;
    line-height: 16px;
@@ -60,7 +68,7 @@
    margin-top: 200px;
 }
 
-.profile__form_button:hover {
+.profile__button:hover {
    opacity: 0.8;
    transition: opacity 0.2s;
    cursor: pointer;
@@ -91,7 +99,7 @@
       margin-bottom: 75px;
    }
 
-   .profile__form_button {
+   .profile__button {
       margin-top: 190px;
    }
 }
@@ -102,19 +110,19 @@
       margin-bottom: 59px;
    }
 
-   .profile__form_item {
+   .profile__form-item {
       width: 260px;
    }
 
-   .profile__form_label {
+   .profile__label {
       margin-left: 0;
    }
 
-   .profile__form_input {
+   .profile__input {
       margin-right: 0;
    }
 
-   .profile__form_button {
+   .profile__button {
       margin-top: 358px;
    }
 

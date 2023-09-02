@@ -24,7 +24,7 @@
 }
 
 @media screen and (max-width: 320px) {
-   .saved-movies .movies-list>.movies-card:nth-child(n+3) {
+   .saved-movies .movies-card-list__container>.movies-card:nth-child(n+3) {
       display: none;
    }
 }

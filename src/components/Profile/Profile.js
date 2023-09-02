@@ -3,17 +3,11 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 
 function Profile() {
-   const [isEditing, setIsEditing] = useState(false);
    const [name, setName] = useState('Виталий');
    const [email, setEmail] = useState('pochta@yandex.ru');
 
-   const handleEdit = () => {
-      setIsEditing(true);
-   };
-
    const handleSave = () => {
       // здесь будет логика отправки данных на сервер
-      setIsEditing(false);
    };
 
    const handleLogout = () => {
@@ -25,41 +19,27 @@ function Profile() {
          <Header />
          <h2 className='profile__title'> Привет, {name}!</h2>
          <form className='profile__form'>
-            <div className='profile__form_item profile__form_name'>
-               <label className='profile__form_label'>Имя</label>
-               {isEditing ? (
-                  <input
-                     className='profile__form_input'
-                     value={name}
-                     onChange={e => setName(e.target.value)}
-                  />
-               ) : (
-                  <span className='profile__form_input'>{name}</span>
-               )}
+            <div className='profile__form-item profile__name'>
+               <label className='profile__label'>Имя</label>
+               <input
+                  className='profile__input'
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+               />
             </div>
-            <div className='profile__form_item'>
-               <label className='profile__form_label'>E-mail</label>
-               {isEditing ? (
-                  <input
-                     className='profile__form_input'
-                     value={email}
-                     onChange={e => setEmail(e.target.value)}
-                  />
-               ) : (
-                  <span className='profile__form_input'>{email}</span>
-               )}
+            <div className='profile__form-item profile__email'>
+               <label className='profile__label'>E-mail</label>
+               <input
+                  className='profile__input'
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+               />
             </div>
-            {isEditing ? (
-               <button onClick={handleSave} className='profile__form_button' type='button'>
-                  Сохранить
-               </button>
-            ) : (
-               <button onClick={handleEdit} className='profile__form_button' type='button'>
-                  Редактировать
-               </button>
-            )}
+            <button onClick={handleSave} className='profile__button' type='button'>
+               Редактировать
+            </button>
          </form>
-         <Link to='/' onClick={handleLogout} className='profile__button-exit' type='button'>
+         <Link to='/' onClick={handleLogout} className='profile__button-exit'>
             Выйти из аккаунта
          </Link>
       </section>

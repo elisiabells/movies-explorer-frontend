@@ -6,9 +6,9 @@ function SearchForm() {
    const [isChecked, setChecked] = useState(false);
 
    return (
-      <div className='search-form__line'>
+      <div className='search-form'>
          <div className='search-form__container'>
-            <form className='search-form'>
+            <form className='search-form__content'>
                <img src={searchIcon} alt='Лупа' className='search-form__icon' />
                <input
                   type='text'
