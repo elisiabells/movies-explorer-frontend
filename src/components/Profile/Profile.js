@@ -3,11 +3,17 @@ import { Link } from 'react-router-dom';
 import Header from '../Header/Header';
 
 function Profile() {
+   const [isEditing, setIsEditing] = useState(false);
    const [name, setName] = useState('Виталий');
    const [email, setEmail] = useState('pochta@yandex.ru');
 
+   const handleEdit = () => {
+      setIsEditing(true);
+   };
+
    const handleSave = () => {
-      // здесь будет логика отправки данных на сервер
+      // здесь вы можете добавить логику отправки измененных данных на сервер
+      setIsEditing(false);
    };
 
    const handleLogout = () => {
@@ -35,13 +41,21 @@ function Profile() {
                   onChange={e => setEmail(e.target.value)}
                />
             </div>
-            <button onClick={handleSave} className='profile__button' type='button'>
-               Редактировать
-            </button>
+            {isEditing ? (
+               <button onClick={handleSave} className='profile__button profile__button-save' type="button">
+                  Сохранить
+               </button>
+            ) : (
+               <button onClick={handleEdit} className='profile__button' type="button">
+                  Редактировать
+               </button>
+            )}
          </form>
-         <Link to='/' onClick={handleLogout} className='profile__button-exit'>
-            Выйти из аккаунта
-         </Link>
+         {!isEditing && (
+            <Link to='/' onClick={handleLogout} className='profile__button-exit'>
+               Выйти из аккаунта
+            </Link>
+         )}
       </section>
    );
 }
