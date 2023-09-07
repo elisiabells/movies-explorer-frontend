@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../Header/Header';
 
-function Profile() {
+function Profile({ onLogout }) {
    const [isEditing, setIsEditing] = useState(false);
    const [name, setName] = useState('Виталий');
    const [email, setEmail] = useState('pochta@yandex.ru');
@@ -17,12 +16,12 @@ function Profile() {
    };
 
    const handleLogout = () => {
-      // здесь будет логика для выхода из аккаунта
+      // здесь будет логика для выхода из аккаунта, например, удаление токена из localStorage или вызов API для выхода
+      onLogout();
    };
 
    return (
       <section className='profile'>
-         <Header />
          <h2 className='profile__title'> Привет, {name}!</h2>
          <form className='profile__form'>
             <div className='profile__form-item profile__name'>

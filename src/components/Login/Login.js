@@ -1,12 +1,8 @@
 import React from 'react';
 import AuthForm from '../AuthForm/AuthForm';
 
-function Login() {
-   const handleLogin = (e) => {
-      e.preventDefault();
-   };
-
-   return <AuthForm type='login' onSubmit={handleLogin} />;
+function Login({ onLogin }) {
+   return <AuthForm type='login' onSubmit={onLogin} />;
 }
 
 export default Login;

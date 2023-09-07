@@ -4,7 +4,7 @@ import Navigation from '../Navigation/Navigation';
 import BurgerMenu from '../BurgerMenu/BurgerMenu';
 import logo from '../../images/logo.svg';
 
-function Header({ loggedIn = true }) {
+function Header({ loggedIn }) {
    const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
    const location = useLocation();
    const isWhiteBackground = location.pathname !== '/';
@@ -18,19 +18,9 @@ function Header({ loggedIn = true }) {
    }
 
    const renderHeader = () => {
-      if (location.pathname === '/') {
+      if (loggedIn) {
          return (
-            <div className='header__actions'>
-               <img src={logo} alt='Логотип' className='header__logo' />
-               <div className='header__navigation'>
-                  <Link to='/sign-up' className='header__signup-link header__link'>Регистрация</Link>
-                  <Link to='/sign-in' className='header__signin-link header__link'>Войти</Link>
-               </div>
-            </div>
-         );
-      } else if (loggedIn) {
-         return (
-            <>
+            <div>
                <div className='header__actions'>
                   <Link to='/'><img src={logo} alt='Логотип' className='header__logo' /></Link>
                   <div className='header__navigation'>
@@ -45,7 +35,7 @@ function Header({ loggedIn = true }) {
                   isOpen={isBurgerMenuOpen}
                   onCloseBurgerMenu={handleCloseBurgerMenu}
                />
-            </>
+            </div>
          );
       } else {
          return (
