@@ -3,26 +3,29 @@ import logo from '../../images/logo.svg';
 import { Link } from 'react-router-dom';
 
 function AuthForm({ type, onSubmit }) {
-   // Объявляем состояние для хранения пользовательских данных и их валидации
+   // Состояние для отображения серверной ошибки
+   const [serverError, setServerError] = useState('');
+
+   // Состояние для хранения данных пользователя и валидации
    const [userData, setUserData] = useState({
       name: {
-         value: "",
+         value: '',
          isValid: false,
-         errorMessage: ""
+         errorMessage: ''
       },
       email: {
-         value: "",
+         value: '',
          isValid: false,
-         errorMessage: ""
+         errorMessage: ''
       },
       password: {
-         value: "",
+         value: '',
          isValid: false,
-         errorMessage: ""
+         errorMessage: ''
       }
    });
 
-   // Определяем, нужно ли отключить кнопку отправки формы
+   // Определение активности кнопки отправки
    const isValid = userData.name.isValid && userData.email.isValid && userData.password.isValid;
    const [disabled, setDisabled] = useState(true);
 
@@ -34,20 +37,35 @@ function AuthForm({ type, onSubmit }) {
       }
    }, [isValid, userData.email.isValid, userData.password.isValid, type]);
 
-   // Обработчик изменения значений в инпутах
+   // Регулярные выражения для валидации
+   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+   const nameRegex = /^[a-zA-Zа-яА-Я\s-]+$/;
+
+   // Обработчик изменений в инпутах
    const handleChange = (evt) => {
       const { name, value, validity, validationMessage } = evt.target;
 
-      setUserData((prevState) => ({
+      let isValidInput = validity.valid;
+      let errorMessage = validationMessage;
+
+      if (name === 'email' && !emailRegex.test(value)) {
+         isValidInput = false;
+         errorMessage = 'Некорректный формат электронной почты';
+      } else if (name === 'name' && !nameRegex.test(value)) {
+         isValidInput = false;
+         errorMessage = 'Имя может содержать только латиницу, кириллицу, пробел или дефис';
+      }
+
+      setUserData(prevState => ({
          ...prevState,
          [name]: {
             ...userData[name],
             value,
-            isValid: validity.valid,
-            errorMessage: validationMessage
+            isValid: isValidInput,
+            errorMessage
          }
       }));
-   }
+   };
 
    // Обработчик отправки формы
    const handleSubmit = (evt) => {
@@ -56,7 +74,7 @@ function AuthForm({ type, onSubmit }) {
          name: userData.name.value,
          email: userData.email.value,
          password: userData.password.value
-      });
+      }, setServerError);
    }
 
    return (
@@ -104,13 +122,16 @@ function AuthForm({ type, onSubmit }) {
                   required
                />
                {userData.password.errorMessage && <span className="auth-form__error">{userData.password.errorMessage}</span>}
-               <button
-                  className={`auth-form__button ${type === 'login' ? 'auth-form__button--login' : ''}`}
-                  type='submit'
-                  disabled={disabled}
-               >
-                  {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
-               </button>
+               <div>
+                  {serverError && <p className="auth-form__error-server">{serverError}</p>}
+                  <button
+                     className={`auth-form__button ${type === 'login' ? 'auth-form__button--login' : ''}`}
+                     type='submit'
+                     disabled={disabled}
+                  >
+                     {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
+                  </button>
+               </div>
             </form>
             <p className='auth-form__footer-text'>
                {type === 'register' ? 'Уже зарегистрированы? ' : 'Ещё не зарегистрированы? '}

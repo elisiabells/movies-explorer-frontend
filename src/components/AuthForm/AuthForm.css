@@ -87,6 +87,32 @@
    cursor: pointer;
 }
 
+.auth-form__button:disabled {
+   background-color: #F8F8F8;
+   color: #C2C2C2;
+   cursor: not-allowed;
+}
+
+.auth-form__error {
+   color: #FF4062;
+   font-size: 10px;
+   font-weight: 400;
+   line-height: 12px;
+   width: 396px;
+   margin-bottom: 15px;
+}
+
+.auth-form__error-server {
+   position: relative;
+   bottom: -65px;
+   font-size: 11px;
+   font-weight: 400;
+   line-height: 13px;
+   color: #FF004C;
+   width: 410px;
+   text-align: center;
+}
+
 .auth-form__button--login {
    margin-top: 157px;
 }
@@ -147,6 +173,15 @@
       margin-top: 155px;
       font-size: 12px;
       line-height: 14px;
+   }
+
+   .auth-form__error {
+      width: 260px;
+   }
+
+   .auth-form__error-server {
+      bottom: -160px;
+      width: 260px;
    }
 
    .auth-form__logo {

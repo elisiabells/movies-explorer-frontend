@@ -1,7 +1,5 @@
-import { BASE_BEATFILMMOVIES_URL } from './constants';
-
-export default class MoviesApi {
-   constructor({ baseUrl }) {
+export class MoviesApi {
+   constructor(baseUrl) {
       this._baseUrl = baseUrl;
    }
 
@@ -13,7 +11,7 @@ export default class MoviesApi {
    }
 
    getInitialMovies = () => {
-      return fetch(`${this._baseUrl}/beatfilm-movies`, {
+      return fetch(`${this._baseUrl}`, {
          method: 'GET',
          headers: {
             'Content-Type': 'application/json',
@@ -23,6 +21,4 @@ export default class MoviesApi {
    };
 }
 
-export const moviesApi = new MoviesApi({
-   baseUrl: BASE_BEATFILMMOVIES_URL
-});
+export const moviesApi = new MoviesApi('https://api.nomoreparties.co/beatfilm-movies');

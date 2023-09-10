@@ -1,8 +1,5 @@
-import Cookies from 'js-cookie';
-import { BASE_URL } from './constants';
-
-export default class MainApi {
-   constructor({ baseUrl }) {
+export class MainApi {
+   constructor(baseUrl) {
       this._baseUrl = baseUrl;
    }
 
@@ -13,70 +10,81 @@ export default class MainApi {
       return res.json();
    }
 
-   // Получение информации о пользователе
-   getUserInfo() {
-      const token = Cookies.get('jwt');
+   // Получение информации о текущем пользователе
+   getCurrentUser() {
       return fetch(`${this._baseUrl}/users/me`, {
-         method: "GET",
          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
          },
+      })
+         .then(res => {
+            if (res.ok) {
+               return res.json();
+            }
+            return Promise.reject(`Ошибка: ${res.status}`);
+         })
+   }
+
+   // Обновление профиля текущего пользователя
+   updateUser({ email, name }) {
+      return fetch(`${this._baseUrl}/users/me`, {
+         method: 'PATCH',
+         headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
+         },
+         body: JSON.stringify({ email, name }),
       }).then(this._handleResponse);
    }
 
-   // Обновление профиля пользователя
-   updateUserProfile({ name, email }) {
-      const token = Cookies.get('jwt');
-      return fetch(`${this._baseUrl}/users/me`, {
-         method: "PATCH",
-         headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-         },
-         body: JSON.stringify({ name, email }),
-      }).then(this._handleResponse);
-   }
-
-   // Получение сохраненных фильмов пользователя
+   // Получение списка сохраненных пользователем фильмов
    getSavedMovies() {
-      const token = Cookies.get('jwt');
       return fetch(`${this._baseUrl}/movies`, {
-         method: "GET",
+         method: 'GET',
          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
          },
       }).then(this._handleResponse);
    }
 
-   // Сохранение нового фильма
-   addMovie(movie) {
-      const token = Cookies.get('jwt');
+   // Добавление нового фильма в список сохраненных
+   savedMovie(movie) {
+      const baseMovieUrl = 'https://api.nomoreparties.co';
       return fetch(`${this._baseUrl}/movies`, {
-         method: "POST",
+         method: 'POST',
          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
          },
-         body: JSON.stringify(movie),
+         body: JSON.stringify({
+            country: movie.country,
+            director: movie.director,
+            duration: movie.duration,
+            year: movie.year,
+            description: movie.description,
+            image: `${baseMovieUrl}${movie.image.url}`,
+            trailerLink: movie.trailerLink,
+            nameRU: movie.nameRU,
+            nameEN: movie.nameEN,
+            thumbnail: `${baseMovieUrl}${movie.image.formats.thumbnail.url}`,
+            movieId: movie.id,
+         }),
       }).then(this._handleResponse);
    }
 
-   // Удаление сохраненного фильма
+   // Удаление фильма из списка сохраненных
    removeMovie(movieId) {
-      const token = Cookies.get('jwt');
       return fetch(`${this._baseUrl}/movies/${movieId}`, {
-         method: "DELETE",
+         method: 'DELETE',
          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('jwt')}`,
          },
       }).then(this._handleResponse);
    }
 }
 
-export const mainApi = new MainApi({
-   baseUrl: BASE_URL
-});
+export const mainApi = new MainApi('http://localhost:3000');
+// 'https://api.moviesbyelisiabells.nomoreparties.co';
