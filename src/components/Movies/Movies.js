@@ -11,7 +11,7 @@ function Movies({ movies, error, isLoading, onSave, savedMovies }) {
    const [filteredMovies, setFilteredMovies] = useState(JSON.parse(localStorage.getItem('filteredMovies')) || []);
    const [inputValue, setInputValue] = useState(localStorage.getItem('inputValue') || '');
 
-   // Сохраняем query, isChecked и filteredMovies в localStorage при их изменении
+   // Сохраняем поисковый запрос, чекБокс, найденные фильмы и значение инпут в localStorage при их изменении
    useEffect(() => {
       localStorage.setItem('searchQuery', query);
    }, [query]);
@@ -28,8 +28,7 @@ function Movies({ movies, error, isLoading, onSave, savedMovies }) {
       localStorage.setItem('inputValue', inputValue);
    }, [inputValue]);
 
-
-   // Фильтрация фильмов на основе текущего запроса и состояния чекбокса
+   // Фильтрация фильмов на основе текущего запроса и состояния чекБокса
    useEffect(() => {
       const result = filterMovies(movies, query, isChecked);
       setFilteredMovies(result);
@@ -45,8 +44,6 @@ function Movies({ movies, error, isLoading, onSave, savedMovies }) {
       setQuery(newQuery);  // устанавливаем запрос
    };
 
-
-   // Функция для рендера контента на основе текущего состояния
    const renderContent = () => {
       if (isLoading) {
          return <Preloader />;
@@ -80,66 +77,3 @@ function Movies({ movies, error, isLoading, onSave, savedMovies }) {
 }
 
 export default Movies;
-// import React, { useState, useEffect } from 'react';
-// import SearchForm from './SearchForm/SearchForm';
-// import MoviesCardList from './MoviesCardList/MoviesCardList';
-// import Preloader from '../Preloader/Preloader';
-// import { searchMovies } from '../../utils/filterMovies';  // Импорт функции из утилиты
-
-// function Movies({ movies, error, isLoading, onSave, savedMovies }) {
-//    const [query, setQuery] = useState(localStorage.getItem('searchQuery') || '');
-//    const [isChecked, setChecked] = useState(localStorage.getItem('isShortFilmChecked') === 'true');
-//    const [filteredMovies, setFilteredMovies] = useState(JSON.parse(localStorage.getItem('filteredMovies')) || []);
-//    const [inputValue, setInputValue] = useState(localStorage.getItem('inputValue') || '');
-
-//    useEffect(() => {
-//       localStorage.setItem('searchQuery', query);
-//       localStorage.setItem('isShortFilmChecked', isChecked.toString());
-//       localStorage.setItem('filteredMovies', JSON.stringify(filteredMovies));
-//       localStorage.setItem('inputValue', inputValue);
-//    }, [query, isChecked, filteredMovies, inputValue]);
-
-//    // Фильтрация фильмов на основе текущего запроса и состояния чекбокса
-//    useEffect(() => {
-//       const result = searchMovies(movies, query, isChecked);
-//       setFilteredMovies(result);
-//    }, [movies, query, isChecked]);
-
-//    // Обработчик поиска фильмов
-//    const handleSearchMovies = (newQuery) => {
-//       setQuery(newQuery);
-//    };
-
-//    // Функция для рендера контента на основе текущего состояния
-//    const renderContent = () => {
-//       if (isLoading) {
-//          return <Preloader />;
-//       }
-//       if (error) {
-//          return <p>{error}</p>;
-//       }
-//       if (filteredMovies.length === 0) {
-//          return <p>Ничего не найдено</p>;
-//       }
-//       return <MoviesCardList
-//          movies={filteredMovies}
-//          isSavedMoviePage={false}
-//          onSave={onSave}
-//          savedMovies={savedMovies}
-//       />;
-//    };
-
-//    return (
-//       <section className='movies'>
-//          <SearchForm
-//             onSearch={(query) => handleSearchMovies(query)}
-//             isChecked={isChecked}
-//             setChecked={setChecked}
-//             initialValue={inputValue}
-//          />
-//          {renderContent()}
-//       </section>
-//    );
-// }
-
-// export default Movies;

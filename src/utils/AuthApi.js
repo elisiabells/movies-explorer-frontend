@@ -47,5 +47,5 @@ export class AuthApi {
    }
 }
 
-export const authApi = new AuthApi('http://localhost:3000');
-// 'https://api.moviesbyelisiabells.nomoreparties.co';
+export const authApi = new AuthApi('https://api.moviesbyelisiabells.nomoreparties.co');
+//'http://localhost:3000'; 

@@ -9,6 +9,7 @@ import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Footer from '../Footer/Footer';
 import NotFound from '../NotFound/NotFound';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { moviesApi } from '../../utils/MoviesApi';
 import { authApi } from '../../utils/AuthApi';
@@ -19,14 +20,13 @@ function App() {
   const navigate = useNavigate();
   const hideForHeader = ['/sign-in', '/sign-up', '/not-found'];
   const hideForFooter = ['/sign-in', '/sign-up', '/profile', '/not-found'];
-
   // Состояния
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [savedMovies, setSavedMovies] = useState([]); // сохраненные фильмы
   const [movies, setMovies] = useState([]); // загруженные фильмы при поиске
+  const [savedMovies, setSavedMovies] = useState([]); // сохраненные фильмы
 
   // Функция регистрации
   const handleRegister = ({ name, email, password }, setServerError) => {
@@ -34,6 +34,8 @@ function App() {
       .signup({ name, email, password })
       .then((data) => {
         console.log(data);
+        localStorage.setItem('jwt', data.token);
+        setLoggedIn(true);
         navigate('/movies');
       })
       .catch((err) => {
@@ -71,9 +73,35 @@ function App() {
   // Функция выхода
   const handleLogout = () => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('searchQuery');
+    localStorage.removeItem('isShortFilmChecked');
+    localStorage.removeItem('filteredMovies');
+    localStorage.removeItem('inputValue');
     setLoggedIn(false);
+    setCurrentUser(null);
+    setError(null);
+    setMovies([]);
+    setSavedMovies([]);
     navigate('/');
   };
+
+  // Проверка JWT токена
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      authApi.checkToken(jwt)
+        .then((data) => {
+          setCurrentUser(data);
+          setLoggedIn(true);
+        })
+        .then(savedMoviesData => {
+          setSavedMovies(savedMoviesData);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, []);
 
   // Функция обновления профиля
   const handleUpdateProfile = ({ email, name }) => {
@@ -85,25 +113,6 @@ function App() {
         console.log(err);
       });
   };
-
-  // Проверка JWT токена
-  useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      authApi.checkToken(jwt)
-        .then((data) => {
-          setCurrentUser(data);
-          setLoggedIn(true);
-          return mainApi.getSavedMovies();
-        })
-        .then(savedMoviesData => {
-          setSavedMovies(savedMoviesData);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, []);
 
   // Получение списка фильмов
   useEffect(() => {
@@ -120,12 +129,11 @@ function App() {
       });
   }, []);
 
-
-
   // Получение сохраненных фильмов
   useEffect(() => {
     mainApi.getSavedMovies()
       .then((movies) => {
+        console.log('Получение сохраненных фильмов:', movies);
         setSavedMovies(movies);
       })
       .catch((err) => {
@@ -134,76 +142,38 @@ function App() {
   }, []);
 
   // Сохранение фильма item.movieId
-  // const handleSaveMovie = (movie) => {
-  //   const isSaved = savedMovies.some((item) => item.movieId === movie.id);
-
-  //   if (!isSaved) {
-  //     mainApi.savedMovie(movie)
-  //       .then((savedMovie) => {
-  //         setSavedMovies([...savedMovies, savedMovie.data]);
-  //       })
-  //       .catch((err) => {
-  //         console.error('Ошибка при сохранении фильма: ', err);
-  //       });
-  //   } else {
-  //     const deleteMovies = savedMovies.find(
-  //       (item) => item.movieId === movie.id
-  //     );
-
-  //     if (deleteMovies && deleteMovies._id) {
-  //       const movieId = savedMovies.find(
-  //         (item) => item.movieId === movie.id
-  //       )._id;
-  //       mainApi.removeMovie(movieId)
-  //         .then(() => {
-  //           setSavedMovies((movies) =>
-  //             movies.filter((item) => item._id !== movieId)
-  //           );
-  //         })
-  //         .catch((err) => {
-  //           console.error("Ошибка при удалении фильма:", err);
-  //         });
-  //     } else {
-  //       console.error("Не удалось найти _id фильма для удаления.");
-  //     }
-  //   }
-  // };
-
-  // Сохранение фильма item._id 
   const handleSaveMovie = (movie) => {
+    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
     console.log("Переданный фильм:", movie);
     console.log("Все сохраненные фильмы savedMovies:", savedMovies);
-
-    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
-    if (savedMovies.some(item => item === undefined)) {
-      console.error("В массиве savedMovies есть undefined элементы!");
-      return;
-    }
     if (!isSaved) {
       mainApi.savedMovie(movie)
         .then((savedMovie) => {
           setSavedMovies([...savedMovies, savedMovie.data]);
         })
         .catch((err) => {
-          console.error('Ошибка при сохранении фильма: ', err);
+          console.error('Ошибка при сохранении: ', err);
         });
     } else {
       const deleteMovies = savedMovies.find(
-        (item) => item._id === movie.id
+        (item) => item.movieId === movie.id
       );
 
       if (deleteMovies && deleteMovies._id) {
-        mainApi.removeMovie(deleteMovies._id)
+        const movieId = savedMovies.find(
+          (item) => item.movieId === movie.id
+        )._id;
+        mainApi.removeMovie(movieId)
           .then(() => {
             setSavedMovies((movies) =>
-              movies.filter((item) => item._id !== deleteMovies._id)
+              movies.filter((item) => item._id !== movieId)
             );
           })
           .catch((err) => {
-            console.error("Ошибка при удалении фильма:", err);
+            console.error('Ошибка при удалении: ', err);
           });
       } else {
-        console.error("Не удалось найти _id фильма для удаления.");
+        console.error('Идентификатор фильма не найден');
       }
     }
   };
@@ -217,7 +187,7 @@ function App() {
         )
       })
       .catch((err) => {
-        console.error('Ошибка при удалении фильма: ', err);
+        console.error('Ошибка при удалении: ', err);
       });
   }
 
@@ -227,26 +197,46 @@ function App() {
         {!hideForHeader.includes(location.pathname) && <Header loggedIn={loggedIn} />}
         <Routes>
           <Route path='/' element={<Main />} />
-          <Route path='/movies' element={
-            <Movies
-              movies={movies}
-              error={error}
-              isLoading={isLoading}
-              savedMovies={savedMovies}
-              onSave={handleSaveMovie}
-            />}
+
+          <Route
+            path='/movies'
+            element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                component={Movies}
+                movies={movies}
+                error={error}
+                isLoading={isLoading}
+                savedMovies={savedMovies}
+                onSave={handleSaveMovie}
+              />
+            }
           />
-          <Route path='/saved-movies' element={
-            <SavedMovies
-              savedMovies={savedMovies}
-              onDelete={handleDeleteMovie}
-            />} />
-          <Route path='/profile' element={
-            <Profile
-              onLogout={handleLogout}
-              onUpdateProfile={handleUpdateProfile}
-            />}
+
+          <Route
+            path='/saved-movies'
+            element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                component={SavedMovies}
+                savedMovies={savedMovies}
+                onDelete={handleDeleteMovie}
+              />
+            }
           />
+
+          <Route
+            path='/profile'
+            element={
+              <ProtectedRoute
+                loggedIn={loggedIn}
+                component={Profile}
+                onLogout={handleLogout}
+                onUpdateProfile={handleUpdateProfile}
+              />
+            }
+          />
+
           <Route path='/sign-in' element={<Login onLogin={handleLogin} />} />
           <Route path='/sign-up' element={<Register onRegister={handleRegister} />} />
           <Route path='/not-found' element={<NotFound />} />

@@ -86,5 +86,5 @@ export class MainApi {
    }
 }
 
-export const mainApi = new MainApi('http://localhost:3000');
-// 'https://api.moviesbyelisiabells.nomoreparties.co';
+export const mainApi = new MainApi('https://api.moviesbyelisiabells.nomoreparties.co');
+// 'http://localhost:3000';

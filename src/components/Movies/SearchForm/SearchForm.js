@@ -3,23 +3,29 @@ import searchIcon from '../../../images/search.svg';
 import Checkbox from '../Checkbox/Checkbox';
 
 function SearchForm({ onSearch, isChecked, setChecked, initialValue, onInputChange }) {
-   // Состояние для значения поля ввода и для ошибок
-   const [inputValue, setInputValue] = useState(initialValue || '');
+   const [inputValue, setInputValue] = useState(initialValue || ''); // Состояние инпута
    const [error, setError] = useState(null);
 
-   // Обработчик отправки формы
+   // Обработчик изменения значения инпута
+   const handleInputChange = (e) => {
+      const value = e.target.value;
+      setInputValue(value);
+      // Вызываем дополнительную функцию, если она передана
+      onInputChange && onInputChange(value);
+   };
+
+   // Обработчик отправки формы поиска
    const handleSubmit = (event) => {
       event.preventDefault();
 
-      // Проверка на пустое или состоящее только из пробелов значение
       if (!inputValue.trim()) {
          setError('Нужно ввести ключевое слово');
          return;
       }
+      // Если нет ошибки, сбрасываем ошибку и выполняем поиск
       setError(null);
       onSearch(inputValue);
    };
-
 
    return (
       <div className='search-form'>
@@ -31,10 +37,7 @@ function SearchForm({ onSearch, isChecked, setChecked, initialValue, onInputChan
                   placeholder='Фильм'
                   className='search-form__input'
                   value={inputValue}
-                  onChange={(e) => {
-                     setInputValue(e.target.value);
-                     onInputChange(e.target.value);
-                  }}
+                  onChange={handleInputChange}
                />
                <button type='submit' className='search-form__button'>Найти</button>
             </form>

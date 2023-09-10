@@ -97,7 +97,7 @@ function AuthForm({ type, onSubmit }) {
                         onChange={handleChange}
                         required
                      />
-                     {userData.name.errorMessage && <span className="auth-form__error">{userData.name.errorMessage}</span>}
+                     {userData.name.errorMessage && <span className='auth-form__error'>{userData.name.errorMessage}</span>}
                   </>
                )}
                <label className='auth-form__label'>E-mail</label>
