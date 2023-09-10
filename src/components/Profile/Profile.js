@@ -2,8 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-
-function Profile({ onLogout, onUpdateProfile }) {
+function Profile({ onLogout, onUpdateProfile, serverError }) {
    const { currentUser } = useContext(CurrentUserContext);
    const [isEditing, setIsEditing] = useState(false);
    const [name, setName] = useState('');
@@ -89,6 +88,7 @@ function Profile({ onLogout, onUpdateProfile }) {
                />
             </div>
             {emailError && <span className='profile__error'>{emailError}</span>}
+            {serverError && <span className='profile__server-error'>{serverError}</span>}
             {isEditing ? (
                <button className='profile__button profile__button-save' type='button' onClick={handleSave} disabled={!isButtonActive}>
                   Сохранить

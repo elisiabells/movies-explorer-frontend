@@ -102,6 +102,17 @@
    width: 396px;
 }
 
+.profile__server-error {
+   position: relative;
+   bottom: -65px;
+   font-size: 11px;
+   font-weight: 400;
+   line-height: 13px;
+   color: #FF004C;
+   width: 410px;
+   text-align: center;
+}
+
 .profile__button-exit {
    font-size: 13px;
    font-weight: 500;
@@ -156,5 +167,16 @@
 
    .profile__button-exit {
       margin-bottom: 50px;
+   }
+
+   .profile__server-error {
+      position: relative;
+      bottom: -65px;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 13px;
+      color: #FF004C;
+      width: 410px;
+      text-align: center;
    }
 }

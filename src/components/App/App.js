@@ -25,11 +25,13 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [movies, setMovies] = useState([]); // загруженные фильмы при поиске
+  const [allMovies, setAllMovies] = useState([]); // загруженные фильмы при поиске
   const [savedMovies, setSavedMovies] = useState([]); // сохраненные фильмы
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
+  const [serverError, setServerError] = useState('');
 
   // Функция регистрации
-  const handleRegister = ({ name, email, password }, setServerError) => {
+  const handleRegister = ({ name, email, password }) => {
     authApi
       .signup({ name, email, password })
       .then((data) => {
@@ -40,13 +42,10 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
-        if (err.message === 'Пользователь с таким email уже существует.') {
-          setServerError('Пользователь с таким email уже существует.');
-        } else {
-          setServerError('При регистрации пользователя произошла ошибка.');
-        }
+        setServerError(err.message || 'Что-то пошло не так.');
       });
   };
+
 
   // Функция входа
   const handleLogin = ({ email, password }) => {
@@ -67,6 +66,7 @@ function App() {
       })
       .catch((err) => {
         console.log(err);
+        setServerError(err.message || 'Что-то пошло не так.');
       });
   };
 
@@ -80,7 +80,7 @@ function App() {
     setLoggedIn(false);
     setCurrentUser(null);
     setError(null);
-    setMovies([]);
+    setAllMovies([]);
     setSavedMovies([]);
     navigate('/');
   };
@@ -94,32 +94,35 @@ function App() {
           setCurrentUser(data);
           setLoggedIn(true);
         })
-        .then(savedMoviesData => {
-          setSavedMovies(savedMoviesData);
-        })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          setIsCheckingToken(false);
         });
+    } else {
+      setIsCheckingToken(false);
     }
   }, []);
 
-  // Функция обновления профиля
-  const handleUpdateProfile = ({ email, name }) => {
-    mainApi.updateUser({ email, name })
-      .then((updatedUser) => {
-        setCurrentUser(updatedUser);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+// Функция обновления профиля
+const handleUpdateProfile = ({ email, name }) => {
+  mainApi.updateUser({ email, name })
+    .then((updatedUser) => {
+      setCurrentUser(updatedUser);
+    })
+    .catch((err) => {
+      setError(err.message);  
+      setServerError(err.message || 'Что-то пошло не так.'); 
+    });
+};
 
   // Получение списка фильмов
   useEffect(() => {
     setIsLoading(true);
     moviesApi.getInitialMovies()
       .then((data) => {
-        setMovies(data);
+        setAllMovies(data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -133,7 +136,6 @@ function App() {
   useEffect(() => {
     mainApi.getSavedMovies()
       .then((movies) => {
-        console.log('Получение сохраненных фильмов:', movies);
         setSavedMovies(movies);
       })
       .catch((err) => {
@@ -141,39 +143,92 @@ function App() {
       });
   }, []);
 
-  // Сохранение фильма item.movieId
+  // Сохранение фильма 
+  // const handleSaveMovie = (movie) => {
+  //   const isSaved = savedMovies.some((item) => item.movieId === movie.id);
+
+  //   if (!isSaved) {
+  //     mainApi
+  //       .savedMovie(movie)
+  //       .then((savedMovie) => {
+  //         setSavedMovies([...savedMovies, savedMovie.data]);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       });
+  //   } else {
+  //     const movieToDelete = savedMovies.find(
+  //       (item) => item.movieId === movie.id
+  //     );
+
+  //     if (movieToDelete && movieToDelete._id) {
+  //       const movieId = savedMovies.find(
+  //         (item) => item.movieId === movie.id
+  //       )._id;
+  //       mainApi
+  //         .removeMovie(movieId)
+  //         .then(() => {
+  //           setSavedMovies((movies) =>
+  //             movies.filter((item) => item._id !== movieId)
+  //           );
+  //         })
+  //         .catch((err) => {
+  //           console.error("Ошибка при удалении фильма:", err);
+  //         });
+  //     } else {
+  //       console.error("Не удалось найти _id фильма для удаления.");
+  //     }
+  //   }
+  // };
+
+  // function handleDeleteMovie(movie) {
+  //   return  mainApi
+  //   .removeMovie(movie._id)
+  //     .then(() => {
+  //       setSavedMovies((savedMovies) =>
+  //         savedMovies.filter((item) => item._id !== movie._id)
+  //       );
+  //     })
+  //     .catch((err) => {
+  //       console.error("Ошибка при удалении фильма:", err);
+  //     });
+  // }
+
+  // Сохранение фильма item._id 
   const handleSaveMovie = (movie) => {
-    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
     console.log("Переданный фильм:", movie);
     console.log("Все сохраненные фильмы savedMovies:", savedMovies);
+
+    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
+    if (savedMovies.some(item => item === undefined)) {
+      console.error("В массиве savedMovies есть undefined элементы!");
+      return;
+    }
     if (!isSaved) {
       mainApi.savedMovie(movie)
         .then((savedMovie) => {
           setSavedMovies([...savedMovies, savedMovie.data]);
         })
         .catch((err) => {
-          console.error('Ошибка при сохранении: ', err);
+          console.error('Ошибка при сохранении фильма: ', err);
         });
     } else {
       const deleteMovies = savedMovies.find(
-        (item) => item.movieId === movie.id
+        (item) => item._id === movie.id
       );
 
       if (deleteMovies && deleteMovies._id) {
-        const movieId = savedMovies.find(
-          (item) => item.movieId === movie.id
-        )._id;
-        mainApi.removeMovie(movieId)
+        mainApi.removeMovie(deleteMovies._id)
           .then(() => {
             setSavedMovies((movies) =>
-              movies.filter((item) => item._id !== movieId)
+              movies.filter((item) => item._id !== deleteMovies._id)
             );
           })
           .catch((err) => {
-            console.error('Ошибка при удалении: ', err);
+            console.error("Ошибка при удалении фильма:", err);
           });
       } else {
-        console.error('Идентификатор фильма не найден');
+        console.error("Не удалось найти _id фильма для удаления.");
       }
     }
   };
@@ -187,7 +242,7 @@ function App() {
         )
       })
       .catch((err) => {
-        console.error('Ошибка при удалении: ', err);
+        console.error('Ошибка при удалении фильма: ', err);
       });
   }
 
@@ -203,8 +258,9 @@ function App() {
             element={
               <ProtectedRoute
                 loggedIn={loggedIn}
+                isCheckingToken={isCheckingToken}
                 component={Movies}
-                movies={movies}
+                movies={allMovies}
                 error={error}
                 isLoading={isLoading}
                 savedMovies={savedMovies}
@@ -218,6 +274,7 @@ function App() {
             element={
               <ProtectedRoute
                 loggedIn={loggedIn}
+                isCheckingToken={isCheckingToken}
                 component={SavedMovies}
                 savedMovies={savedMovies}
                 onDelete={handleDeleteMovie}
@@ -230,9 +287,11 @@ function App() {
             element={
               <ProtectedRoute
                 loggedIn={loggedIn}
+                isCheckingToken={isCheckingToken}
                 component={Profile}
                 onLogout={handleLogout}
                 onUpdateProfile={handleUpdateProfile}
+                serverError={serverError}
               />
             }
           />
