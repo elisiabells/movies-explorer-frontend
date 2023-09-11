@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MovieCard from '../Movies/MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
@@ -20,6 +20,10 @@ function SavedMovies({ savedMovies, onDelete, isLoading, error }) {
     const result = filterMovies(savedMovies, currentQuery, checked);
     setFilteredMovies(result);
   };
+
+  useEffect(() => {
+    setFilteredMovies(savedMovies);
+  }, [savedMovies])
 
   const renderContent = () => {
     if (isLoading) {

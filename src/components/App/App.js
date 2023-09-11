@@ -9,6 +9,7 @@ import Movies from '../Movies/Movies';
 import SavedMovies from '../SavedMovies/SavedMovies';
 import Footer from '../Footer/Footer';
 import NotFound from '../NotFound/NotFound';
+import InfoTooltip from '../InfoTooltip/InfoTooltip';
 import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { moviesApi } from '../../utils/MoviesApi';
@@ -25,44 +26,56 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [allMovies, setAllMovies] = useState([]); // загруженные фильмы при поиске
-  const [savedMovies, setSavedMovies] = useState([]); // сохраненные фильмы
+  const [showPopup, setShowPopup] = useState(false);
+  const [allMovies, setAllMovies] = useState([]);
+  const [savedMovies, setSavedMovies] = useState([]);
   const [isCheckingToken, setIsCheckingToken] = useState(true);
   const [serverError, setServerError] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
 
-  // Функция регистрации
+
+  // // Функция регистрации
   const handleRegister = ({ name, email, password }) => {
     authApi
       .signup({ name, email, password })
-      .then((data) => {
-        console.log(data);
-        localStorage.setItem('jwt', data.token);
-        setLoggedIn(true);
-        navigate('/movies');
+      .then(() => {
+        handleLogin({ email, password });
       })
       .catch((err) => {
         console.log(err);
-        setServerError(err.message || 'Что-то пошло не так.');
+        setRegisterError(err.message || 'Что-то пошло не так.');
       });
   };
 
-
   // Функция входа
   const handleLogin = ({ email, password }) => {
-    authApi
-      .signin(email, password)
+    authApi.signin(email, password)
       .then((data) => {
         if (data) {
           localStorage.setItem('jwt', data.token);
           setLoggedIn(true);
+          navigate('/movies');
           return mainApi.getCurrentUser();
         }
       })
       .then((userData) => {
         if (userData) {
           setCurrentUser(userData);
-          navigate('/movies');
         }
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoginError(err.message || 'Что-то пошло не так.');
+      });
+  };
+
+  // Функция обновления профиля
+  const handleUpdateProfile = ({ email, name }) => {
+    mainApi.updateUser({ email, name })
+      .then((updatedUser) => {
+        setCurrentUser(updatedUser);
+        setShowPopup(true);
       })
       .catch((err) => {
         console.log(err);
@@ -72,11 +85,8 @@ function App() {
 
   // Функция выхода
   const handleLogout = () => {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('searchQuery');
-    localStorage.removeItem('isShortFilmChecked');
-    localStorage.removeItem('filteredMovies');
-    localStorage.removeItem('inputValue');
+    localStorage.clear();
+
     setLoggedIn(false);
     setCurrentUser(null);
     setError(null);
@@ -105,18 +115,6 @@ function App() {
     }
   }, []);
 
-// Функция обновления профиля
-const handleUpdateProfile = ({ email, name }) => {
-  mainApi.updateUser({ email, name })
-    .then((updatedUser) => {
-      setCurrentUser(updatedUser);
-    })
-    .catch((err) => {
-      setError(err.message);  
-      setServerError(err.message || 'Что-то пошло не так.'); 
-    });
-};
-
   // Получение списка фильмов
   useEffect(() => {
     setIsLoading(true);
@@ -144,60 +142,7 @@ const handleUpdateProfile = ({ email, name }) => {
   }, []);
 
   // Сохранение фильма 
-  // const handleSaveMovie = (movie) => {
-  //   const isSaved = savedMovies.some((item) => item.movieId === movie.id);
-
-  //   if (!isSaved) {
-  //     mainApi
-  //       .savedMovie(movie)
-  //       .then((savedMovie) => {
-  //         setSavedMovies([...savedMovies, savedMovie.data]);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       });
-  //   } else {
-  //     const movieToDelete = savedMovies.find(
-  //       (item) => item.movieId === movie.id
-  //     );
-
-  //     if (movieToDelete && movieToDelete._id) {
-  //       const movieId = savedMovies.find(
-  //         (item) => item.movieId === movie.id
-  //       )._id;
-  //       mainApi
-  //         .removeMovie(movieId)
-  //         .then(() => {
-  //           setSavedMovies((movies) =>
-  //             movies.filter((item) => item._id !== movieId)
-  //           );
-  //         })
-  //         .catch((err) => {
-  //           console.error("Ошибка при удалении фильма:", err);
-  //         });
-  //     } else {
-  //       console.error("Не удалось найти _id фильма для удаления.");
-  //     }
-  //   }
-  // };
-
-  // function handleDeleteMovie(movie) {
-  //   return  mainApi
-  //   .removeMovie(movie._id)
-  //     .then(() => {
-  //       setSavedMovies((savedMovies) =>
-  //         savedMovies.filter((item) => item._id !== movie._id)
-  //       );
-  //     })
-  //     .catch((err) => {
-  //       console.error("Ошибка при удалении фильма:", err);
-  //     });
-  // }
-
-  // Сохранение фильма item._id 
   const handleSaveMovie = (movie) => {
-    console.log("Переданный фильм:", movie);
-    console.log("Все сохраненные фильмы savedMovies:", savedMovies);
 
     const isSaved = savedMovies.some((item) => item.movieId === movie.id);
     if (savedMovies.some(item => item === undefined)) {
@@ -207,14 +152,14 @@ const handleUpdateProfile = ({ email, name }) => {
     if (!isSaved) {
       mainApi.savedMovie(movie)
         .then((savedMovie) => {
-          setSavedMovies([...savedMovies, savedMovie.data]);
+          setSavedMovies([...savedMovies, savedMovie]);
         })
         .catch((err) => {
           console.error('Ошибка при сохранении фильма: ', err);
         });
     } else {
       const deleteMovies = savedMovies.find(
-        (item) => item._id === movie.id
+        (item) => item.movieId === movie.id
       );
 
       if (deleteMovies && deleteMovies._id) {
@@ -225,10 +170,10 @@ const handleUpdateProfile = ({ email, name }) => {
             );
           })
           .catch((err) => {
-            console.error("Ошибка при удалении фильма:", err);
+            console.error('Ошибка при удалении фильма:', err);
           });
       } else {
-        console.error("Не удалось найти _id фильма для удаления.");
+        console.error('Не удалось найти фильм для удаления.');
       }
     }
   };
@@ -296,12 +241,34 @@ const handleUpdateProfile = ({ email, name }) => {
             }
           />
 
-          <Route path='/sign-in' element={<Login onLogin={handleLogin} />} />
-          <Route path='/sign-up' element={<Register onRegister={handleRegister} />} />
+          <Route path='/sign-in'
+            element={
+              <Login
+                onLogin={handleLogin}
+                serverError={loginError}
+                location={location}
+              />
+            }
+          />
+          <Route path='/sign-up'
+            element={
+              <Register
+                onRegister={handleRegister}
+                serverError={registerError}
+                location={location}
+              />
+            }
+          />
+
           <Route path='/not-found' element={<NotFound />} />
           <Route path='*' element={<Navigate to='/not-found' />} />
         </Routes>
         {!hideForFooter.includes(location.pathname) && <Footer />}
+        <InfoTooltip
+          isOpen={showPopup}
+          onClose={() => setShowPopup(false)}
+          message="Данные успешно изменены!"
+        />
       </div>
     </CurrentUserContext.Provider>
   );
