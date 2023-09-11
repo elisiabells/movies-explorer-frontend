@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../../images/logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-function AuthForm({ type, onSubmit }) {
-   // Состояние для отображения серверной ошибки
-   const [serverError, setServerError] = useState('');
-
+function AuthForm({ type, onSubmit, serverError }) {
    // Состояние для хранения данных пользователя и валидации
    const [userData, setUserData] = useState({
       name: {
@@ -24,18 +21,43 @@ function AuthForm({ type, onSubmit }) {
          errorMessage: ''
       }
    });
+   const location = useLocation();
 
    // Определение активности кнопки отправки
    const isValid = userData.name.isValid && userData.email.isValid && userData.password.isValid;
    const [disabled, setDisabled] = useState(true);
 
    useEffect(() => {
-      if (type === 'login') {
-         (userData.email.isValid && userData.password.isValid) ? setDisabled(false) : setDisabled(true);
+      if (serverError) {
+         setDisabled(true);
       } else {
-         isValid ? setDisabled(false) : setDisabled(true);
+         if (type === 'login') {
+            (userData.email.isValid && userData.password.isValid) ? setDisabled(false) : setDisabled(true);
+         } else {
+            isValid ? setDisabled(false) : setDisabled(true);
+         }
       }
-   }, [isValid, userData.email.isValid, userData.password.isValid, type]);
+      // Если пользователь перешел на другую страницу (регистрация/вход), сбрасываем ошибки и данные формы
+      if (location.pathname !== (type === 'register' ? '/sign-up' : '/sign-in')) {
+         setUserData({
+            name: {
+               value: '',
+               isValid: false,
+               errorMessage: ''
+            },
+            email: {
+               value: '',
+               isValid: false,
+               errorMessage: ''
+            },
+            password: {
+               value: '',
+               isValid: false,
+               errorMessage: ''
+            }
+         });
+      }
+   }, [isValid, userData.email.isValid, userData.password.isValid, type, serverError, location]);
 
    // Регулярные выражения для валидации
    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -74,7 +96,7 @@ function AuthForm({ type, onSubmit }) {
          name: userData.name.value,
          email: userData.email.value,
          password: userData.password.value
-      }, setServerError);
+      });
    }
 
    return (
@@ -122,10 +144,10 @@ function AuthForm({ type, onSubmit }) {
                   required
                />
                {userData.password.errorMessage && <span className="auth-form__error">{userData.password.errorMessage}</span>}
-               <div>
+               <div className={`auth-form__sabmit-container ${type === 'login' ? 'auth-form__sabmit-container-login' : ''}`}>
                   {serverError && <p className="auth-form__error-server">{serverError}</p>}
                   <button
-                     className={`auth-form__button ${type === 'login' ? 'auth-form__button--login' : ''}`}
+                     className='auth-form__button'
                      type='submit'
                      disabled={disabled}
                   >
@@ -136,7 +158,7 @@ function AuthForm({ type, onSubmit }) {
             <p className='auth-form__footer-text'>
                {type === 'register' ? 'Уже зарегистрированы? ' : 'Ещё не зарегистрированы? '}
                <Link to={type === 'register' ? '/sign-in' : '/sign-up'} className='auth-form__link'>
-                  {type === 'register' ? 'Войти' : 'Регистрация'}
+                  {type === 'register' ? 'Войти' : 'Зарегистрироваться'}
                </Link>
             </p>
          </div>

@@ -50,12 +50,14 @@ function Profile({ onLogout, onUpdateProfile, serverError }) {
    };
 
    const handleSave = () => {
-      setIsEditing(false);
       onUpdateProfile({
          name,
          email
+      })
+      .then(() => {
+        setIsEditing(false);
       });
-   };
+    };    
 
    return (
       <section className='profile'>
