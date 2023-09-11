@@ -19,7 +19,7 @@ function Portfolio() {
                </Link>
             </li>
             <li className='portfolio__list'>
-               <Link to='https://mestobyelisiabells.nomoreparties.sbs/sign-in' className='portfolio__link' target='_blank' rel='noreferrer'>
+               <Link to='https://github.com/elisiabells/react-mesto-api-full-gha' className='portfolio__link' target='_blank' rel='noreferrer'>
                   Одностраничное приложение
                   <p className='portfolio__link-arrow'>&#8599;</p>
                </Link>

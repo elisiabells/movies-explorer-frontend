@@ -3,11 +3,15 @@ export class AuthApi {
       this._baseUrl = baseUrl;
    }
 
-   _handleResponse(response) {
-      if (!response.ok) {
-         return Promise.reject(`Ошибка: ${response.status}`);
+   _handleResponse(res) {
+      if (!res.ok) {
+         return res.json().then((data) => {
+            const error = new Error(data.message || 'Что-то пошло не так.');
+            error.data = data;
+            throw error;
+         });
       }
-      return response.json();
+      return res.json();
    }
 
    // Регистрация нового пользователя
@@ -47,5 +51,5 @@ export class AuthApi {
    }
 }
 
-export const authApi = new AuthApi('http://localhost:3000');
-//'https://api.moviesbyelisiabells.nomoreparties.co'; 
+export const authApi = new AuthApi('https://api.moviesbyelisiabells.nomoreparties.co');
+//'http://localhost:3000'; 

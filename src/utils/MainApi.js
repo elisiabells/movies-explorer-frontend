@@ -5,7 +5,11 @@ export class MainApi {
 
    _handleResponse(res) {
       if (!res.ok) {
-         return Promise.reject(`Ошибка: ${res.status}`);
+         return res.json().then((data) => {
+            const error = new Error(data.message || 'Что-то пошло не так.');
+            error.data = data;
+            throw error;
+         });
       }
       return res.json();
    }
@@ -86,5 +90,5 @@ export class MainApi {
    }
 }
 
-export const mainApi = new MainApi('http://localhost:3000');
-// 'https://api.moviesbyelisiabells.nomoreparties.co';
+export const mainApi = new MainApi('https://api.moviesbyelisiabells.nomoreparties.co');
+// 'http://localhost:3000';
