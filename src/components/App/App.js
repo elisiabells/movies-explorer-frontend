@@ -247,6 +247,7 @@ function App() {
                 onLogout={handleLogout}
                 onUpdateProfile={handleUpdateProfile}
                 serverError={serverError}
+                setServerError={setServerError}
               />
             }
           />

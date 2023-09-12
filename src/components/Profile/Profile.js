@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-function Profile({ onLogout, onUpdateProfile, serverError }) {
+function Profile({ onLogout, onUpdateProfile, serverError, setServerError }) {
    const { currentUser } = useContext(CurrentUserContext);
    const [isEditing, setIsEditing] = useState(false);
    const [name, setName] = useState('');
@@ -31,17 +31,20 @@ function Profile({ onLogout, onUpdateProfile, serverError }) {
       setNameError(isNameValid ? '' : 'Имя может содержать только латиницу, кириллицу, пробел или дефис');
       setEmailError(isEmailValid ? '' : 'Некорректный формат электронной почты');
 
-      setIsButtonActive(isNameValid && isEmailValid && (name !== currentUser.name || email !== currentUser.email));
+      setIsButtonActive(isNameValid && isEmailValid && (name !== currentUser.name || email !== currentUser.email) && !serverError);
 
-   }, [name, email, currentUser.name, currentUser.email]);
+
+   }, [name, email, currentUser.name, currentUser.email, serverError]);
 
    // Обработчики изменения имени и email в инпуте
    const handleNameChange = (event) => {
       setName(event.target.value);
+      setServerError('');
    };
 
    const handleEmailChange = (event) => {
       setEmail(event.target.value);
+      setServerError('');
    };
 
    // Обработчики режима редактирования и сохранения изменений профиля
