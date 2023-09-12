@@ -1,3 +1,5 @@
+import { BASE_URL_MAIN } from "./config";
+
 export class AuthApi {
    constructor(baseUrl) {
       this._baseUrl = baseUrl;
@@ -51,5 +53,4 @@ export class AuthApi {
    }
 }
 
-export const authApi = new AuthApi('https://api.moviesbyelisiabells.nomoreparties.co');
-//'http://localhost:3000'; 
+export const authApi = new AuthApi(BASE_URL_MAIN);

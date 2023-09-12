@@ -21,21 +21,25 @@ function App() {
   const navigate = useNavigate();
   const hideForHeader = ['/sign-in', '/sign-up', '/not-found'];
   const hideForFooter = ['/sign-in', '/sign-up', '/profile', '/not-found'];
-  // Состояния
+  // User session and authentication states
   const [loggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [error, setError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showPopup, setShowPopup] = useState(false);
+  const [isCheckingToken, setIsCheckingToken] = useState(true);
+  const [userSessionChanged, setUserSessionChanged] = useState(false);
+  // Data states
   const [allMovies, setAllMovies] = useState([]);
   const [savedMovies, setSavedMovies] = useState([]);
-  const [isCheckingToken, setIsCheckingToken] = useState(true);
+  // UI/UX states
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPopup, setShowPopup] = useState(false);
+  // Error states
+  const [error, setError] = useState(null);
   const [serverError, setServerError] = useState('');
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
-  const [userSessionChanged, setUserSessionChanged] = useState(false);
 
-  // // Функция регистрации
+
+  // Функция регистрации
   const handleRegister = ({ name, email, password }) => {
     return authApi
       .signup({ name, email, password })
@@ -71,14 +75,6 @@ function App() {
       });
   };
 
-  // Что бы не открывал sigin/signuo для авторизованных
-  useEffect(() => {
-    if (loggedIn && (location.pathname === '/sign-in' || location.pathname === '/sign-up')) {
-      navigate('/movies');
-    }
-  }, [loggedIn, location.pathname, navigate]);
-
-
   // Функция обновления профиля
   const handleUpdateProfile = ({ email, name }) => {
     return mainApi.updateUser({ email, name })
@@ -91,6 +87,56 @@ function App() {
         setServerError(err.message || 'Что-то пошло не так.');
       });
   };
+
+  // Сохранение фильма 
+  const handleSaveMovie = (movie) => {
+
+    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
+    if (savedMovies.some(item => item === undefined)) {
+      console.error("В массиве savedMovies есть undefined элементы!");
+      return;
+    }
+    if (!isSaved) {
+      mainApi.savedMovie(movie)
+        .then((savedMovie) => {
+          setSavedMovies([...savedMovies, savedMovie]);
+        })
+        .catch((err) => {
+          console.error('Ошибка при сохранении фильма: ', err);
+        });
+    } else {
+      const deleteMovies = savedMovies.find(
+        (item) => item.movieId === movie.id
+      );
+
+      if (deleteMovies && deleteMovies._id) {
+        mainApi.removeMovie(deleteMovies._id)
+          .then(() => {
+            setSavedMovies((movies) =>
+              movies.filter((item) => item._id !== deleteMovies._id)
+            );
+          })
+          .catch((err) => {
+            console.error('Ошибка при удалении фильма:', err);
+          });
+      } else {
+        console.error('Не удалось найти фильм для удаления.');
+      }
+    }
+  };
+
+  // Удаление фильма
+  const handleDeleteMovie = (movie) => {
+    return mainApi.removeMovie(movie._id)
+      .then(() => {
+        setSavedMovies((savedMovies) =>
+          savedMovies.filter((item) => item._id !== movie._id)
+        )
+      })
+      .catch((err) => {
+        console.error('Ошибка при удалении фильма: ', err);
+      });
+  }
 
   // Функция выхода
   const handleLogout = () => {
@@ -151,55 +197,12 @@ function App() {
       });
   }, [userSessionChanged]);
 
-  // Сохранение фильма 
-  const handleSaveMovie = (movie) => {
-
-    const isSaved = savedMovies.some((item) => item.movieId === movie.id);
-    if (savedMovies.some(item => item === undefined)) {
-      console.error("В массиве savedMovies есть undefined элементы!");
-      return;
+  // Что бы не открывал sigin/signuo для авторизованных
+  useEffect(() => {
+    if (loggedIn && (location.pathname === '/sign-in' || location.pathname === '/sign-up')) {
+      navigate('/movies');
     }
-    if (!isSaved) {
-      mainApi.savedMovie(movie)
-        .then((savedMovie) => {
-          setSavedMovies([...savedMovies, savedMovie]);
-        })
-        .catch((err) => {
-          console.error('Ошибка при сохранении фильма: ', err);
-        });
-    } else {
-      const deleteMovies = savedMovies.find(
-        (item) => item.movieId === movie.id
-      );
-
-      if (deleteMovies && deleteMovies._id) {
-        mainApi.removeMovie(deleteMovies._id)
-          .then(() => {
-            setSavedMovies((movies) =>
-              movies.filter((item) => item._id !== deleteMovies._id)
-            );
-          })
-          .catch((err) => {
-            console.error('Ошибка при удалении фильма:', err);
-          });
-      } else {
-        console.error('Не удалось найти фильм для удаления.');
-      }
-    }
-  };
-
-  // Удаление фильма
-  const handleDeleteMovie = (movie) => {
-    return mainApi.removeMovie(movie._id)
-      .then(() => {
-        setSavedMovies((savedMovies) =>
-          savedMovies.filter((item) => item._id !== movie._id)
-        )
-      })
-      .catch((err) => {
-        console.error('Ошибка при удалении фильма: ', err);
-      });
-  }
+  }, [loggedIn, location.pathname, navigate]);
 
   return (
     <CurrentUserContext.Provider value={{ currentUser, setCurrentUser }}>

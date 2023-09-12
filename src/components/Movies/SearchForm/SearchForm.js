@@ -3,7 +3,7 @@ import searchIcon from '../../../images/search.svg';
 import Checkbox from '../Checkbox/Checkbox';
 
 function SearchForm({ onSearch, isChecked, setChecked, initialValue, onInputChange }) {
-   const [inputValue, setInputValue] = useState(initialValue || ''); // Состояние инпута
+   const [inputValue, setInputValue] = useState(initialValue || '');
    const [error, setError] = useState(null);
 
    // Обработчик изменения значения инпута

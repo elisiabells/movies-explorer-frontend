@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import MovieCard from '../MoviesCard/MoviesCard';
+import {
+  LARGE_SCREEN_WIDTH, MEDIUM_SCREEN_WIDTH,
+  SMALL_MEDIUM_SCREEN_ADDITIONAL_CARDS_COUNT,
+  LARGE_SCREEN_CARDS_COUNT, MEDIUM_SCREEN_CARDS_COUNT,
+  SMALL_SCREEN_CARDS_COUNT, LARGE_SCREEN_ADDITIONAL_CARDS_COUNT,
+} from '../../../utils/config';
 
 function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePage }) {
-  // Состояние для хранения фильмов, отображаемых в текущий момент на экране
   const [displayedMovies, setDisplayedMovies] = useState([]);
 
   // Логика для определения количества карточек в зависимости от ширины экрана
@@ -10,9 +15,9 @@ function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePag
     const handleResize = () => {
       const width = window.innerWidth;
       let count;
-      if (width >= 1160) count = 12;
-      else if (width >= 660) count = 8;
-      else count = 5;
+      if (width >= LARGE_SCREEN_WIDTH) count = LARGE_SCREEN_CARDS_COUNT;
+      else if (width >= MEDIUM_SCREEN_WIDTH) count = MEDIUM_SCREEN_CARDS_COUNT;
+      else count = SMALL_SCREEN_CARDS_COUNT;
       setDisplayedMovies(movies.slice(0, count));
     };
 
@@ -20,7 +25,6 @@ function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePag
     const resizeTimeout = setTimeout(handleResize, 300);
     window.addEventListener('resize', handleResize);
 
-    // Очистка слушателей и таймаутов при размонтировании компонента
     return () => {
       clearTimeout(resizeTimeout);
       window.removeEventListener('resize', handleResize);
@@ -33,10 +37,10 @@ function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePag
     const width = window.innerWidth;
     let additionalCount;
 
-    if (width >= 1161) {
-      additionalCount = 3;
+    if (width >= LARGE_SCREEN_WIDTH + 1) {
+      additionalCount = LARGE_SCREEN_ADDITIONAL_CARDS_COUNT;
     } else {
-      additionalCount = 2;
+      additionalCount = SMALL_MEDIUM_SCREEN_ADDITIONAL_CARDS_COUNT;
     }
 
     setDisplayedMovies(movies.slice(0, currentCount + additionalCount));
@@ -48,7 +52,6 @@ function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePag
         {displayedMovies.map(movie => {
           return (
             <MovieCard
-              key={movie.id ?? movie._id}
               movie={movie}
               isSavedMoviePage={isSavedMoviePage}
               onSave={onSave}

@@ -1,25 +1,19 @@
 import React from 'react';
+import { BASE_URL } from '../../../utils/config';
+import { formatDuration } from '../../../utils/config';
 
 function MovieCard({ movie, isSavedMoviePage, onSave, onDelete, savedMovies }) {
-  const baseUrl = "https://api.nomoreparties.co/";
-  const imageUrl = isSavedMoviePage ? movie.image : baseUrl + movie.image.url;
-  const isSaved = !isSavedMoviePage && savedMovies.some(item => item?.movieId === movie.id);
+  const imageUrl = isSavedMoviePage ? movie.image : BASE_URL + movie.image.url;
+  const isSaved = savedMovies.some(item => item?.movieId === movie.id);
 
-  // Сохранить
-  function handleSave() {
+  // Обработчик клика на кнопку "Сохранить"
+  const handleSave = () => {
     onSave(movie);
-  }
+  };
 
-  // Удалить
-  function handleDelite() {
+  // Обработчик клика на кнопку "Удалить"
+  const handleDelete = () => {
     onDelete(movie);
-  }
-
-  // Функция для конвертации длительности фильма в формат часов и минут
-  const formatDuration = (duration) => {
-    const hours = Math.floor(duration / 60);
-    const minutes = duration % 60;
-    return `${hours}ч ${minutes}м`;
   };
 
   return (
@@ -29,7 +23,7 @@ function MovieCard({ movie, isSavedMoviePage, onSave, onDelete, savedMovies }) {
           <img src={imageUrl} alt={movie.nameRU} className='movies-card__image' />
         </a>
         {isSavedMoviePage ? (
-          <button className='movies-card__delete-button movies-card__save-button' onClick={handleDelite}>
+          <button className='movies-card__delete-button movies-card__save-button' onClick={handleDelete}>
           </button>
         ) : (
           <button

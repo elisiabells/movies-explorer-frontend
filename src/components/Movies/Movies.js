@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import SearchForm from './SearchForm/SearchForm';
 import MoviesCardList from './MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
-import filterMovies from '../../utils/filterMovies';
+import filterMovies from '../../utils/config';
 
 function Movies({ movies, error, isLoading, onSave, savedMovies }) {
    // Инициализация состояний из localStorage или дефолтные значения

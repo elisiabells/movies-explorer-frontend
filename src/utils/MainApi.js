@@ -1,3 +1,5 @@
+import { BASE_URL_MAIN } from "./config";
+
 export class MainApi {
    constructor(baseUrl) {
       this._baseUrl = baseUrl;
@@ -90,5 +92,4 @@ export class MainApi {
    }
 }
 
-export const mainApi = new MainApi('https://api.moviesbyelisiabells.nomoreparties.co');
-// 'http://localhost:3000';
+export const mainApi = new MainApi(BASE_URL_MAIN);

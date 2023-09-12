@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SearchForm from '../Movies/SearchForm/SearchForm';
 import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
-import filterMovies from '../../utils/filterMovies';
+import filterMovies from '../../utils/config';
 
 function SavedMovies({ savedMovies, onDelete, isLoading, error }) {
   const [filteredMovies, setFilteredMovies] = useState(savedMovies);

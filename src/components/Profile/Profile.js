@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { EMAIL_REGEX, NAME_REGEX } from '../../utils/config';
 
 function Profile({ onLogout, onUpdateProfile, serverError, setServerError }) {
    const { currentUser } = useContext(CurrentUserContext);
-   const [isEditing, setIsEditing] = useState(false);
-   const [name, setName] = useState('');
-   const [email, setEmail] = useState('');
-   const [isButtonActive, setIsButtonActive] = useState(false);
-   const [nameError, setNameError] = useState('');
-   const [emailError, setEmailError] = useState('');
+   const [isEditing, setIsEditing] = useState(false); // Состояние редактирования профиля
+   const [name, setName] = useState(''); // Имя пользователя
+   const [email, setEmail] = useState(''); // Электронная почта пользователя
+   const [isButtonActive, setIsButtonActive] = useState(false); // Активность кнопки "Сохранить"
+   const [nameError, setNameError] = useState(''); // Ошибка валидации имени
+   const [emailError, setEmailError] = useState(''); // Ошибка валидации email
 
-   // Заполняем состояния name и email данными текущего пользователя
+   // Эффект для заполнения данных профиля при изменении currentUser
    useEffect(() => {
       if (currentUser) {
          setName(currentUser.name);
@@ -19,48 +20,55 @@ function Profile({ onLogout, onUpdateProfile, serverError, setServerError }) {
       }
    }, [currentUser]);
 
-   // Проверяем валидность имени и электронной почты и активируем кнопку "Сохранить"
+   // Эффект для сброса данных профиля к предыдущим значениям при наличии ошибки сервера
    useEffect(() => {
-      // Регулярные выражения для валидации
-      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-      const nameRegex = /^[a-zA-Zа-яА-Я\s-]+$/;
+      if (serverError) {
+         setName(currentUser.name);
+         setEmail(currentUser.email);
+      }
+   }, [serverError, currentUser.name, currentUser.email]);
 
-      const isNameValid = nameRegex.test(name);
-      const isEmailValid = emailRegex.test(email);
+   // Эффект для валидации данных и активации кнопки "Сохранить"
+   useEffect(() => {
+      const isNameValid = NAME_REGEX.test(name);
+      const isEmailValid = EMAIL_REGEX.test(email);
 
+      // Установка ошибок валидации
       setNameError(isNameValid ? '' : 'Имя может содержать только латиницу, кириллицу, пробел или дефис');
       setEmailError(isEmailValid ? '' : 'Некорректный формат электронной почты');
 
+      // Проверка активации кнопки "Сохранить"
       setIsButtonActive(isNameValid && isEmailValid && (name !== currentUser.name || email !== currentUser.email) && !serverError);
-
 
    }, [name, email, currentUser.name, currentUser.email, serverError]);
 
-   // Обработчики изменения имени и email в инпуте
+   // Обработчик изменения имени пользователя
    const handleNameChange = (event) => {
       setName(event.target.value);
       setServerError('');
    };
 
+   // Обработчик изменения email пользователя
    const handleEmailChange = (event) => {
       setEmail(event.target.value);
       setServerError('');
    };
 
-   // Обработчики режима редактирования и сохранения изменений профиля
+   // Обработчик режима редактирования
    const handleEdit = () => {
       setIsEditing(true);
    };
 
+   // Обработчик сохранения изменений профиля
    const handleSave = () => {
       onUpdateProfile({
          name,
          email
       })
-      .then(() => {
-        setIsEditing(false);
-      });
-    };    
+         .then(() => {
+            setIsEditing(false);
+         });
+   };
 
    return (
       <section className='profile'>
@@ -80,6 +88,7 @@ function Profile({ onLogout, onUpdateProfile, serverError, setServerError }) {
                />
             </div>
             {nameError && <span className='profile__error'>{nameError}</span>}
+
             <div className='profile__form-item profile__email'>
                <label className='profile__label'>E-mail</label>
                <input
@@ -94,6 +103,7 @@ function Profile({ onLogout, onUpdateProfile, serverError, setServerError }) {
             </div>
             {emailError && <span className='profile__error'>{emailError}</span>}
             {serverError && <span className='profile__server-error'>{serverError}</span>}
+
             {isEditing ? (
                <button className='profile__button profile__button-save' type='button' onClick={handleSave} disabled={!isButtonActive}>
                   Сохранить

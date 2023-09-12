@@ -1,112 +1,68 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../../images/logo.svg';
-import { Link, useLocation } from 'react-router-dom';
+import { EMAIL_REGEX, NAME_REGEX } from '../../utils/config';
 
 function AuthForm({ type, onSubmit, serverError, setServerError }) {
-   // Состояние для хранения данных пользователя и валидации
+   const [isSubmitting, setIsSubmitting] = useState(false);
+   const [isServerError, setIsServerError] = useState(false);
    const [userData, setUserData] = useState({
-      name: {
-         value: '',
-         isValid: false,
-         errorMessage: ''
-      },
-      email: {
-         value: '',
-         isValid: false,
-         errorMessage: ''
-      },
-      password: {
-         value: '',
-         isValid: false,
-         errorMessage: ''
-      }
+      name: { value: '', isValid: false, errorMessage: '' },
+      email: { value: '', isValid: false, errorMessage: '' },
+      password: { value: '', isValid: false, errorMessage: '' },
    });
 
-   // Состояние, чтобы блокировать форму во время отправки данных на сервер
-   const [isSubmitting, setIsSubmitting] = useState(false);
-
-   const location = useLocation();
-
-   // Определение активности кнопки отправки
-   const isValid = userData.name.isValid && userData.email.isValid && userData.password.isValid;
-   const [disabled, setDisabled] = useState(true);
-
+   // Эффект для обработки ошибки сервера
    useEffect(() => {
-      // Если на странице возникла ошибка сервера, сбрасываем блокировку кнопки
       if (serverError) {
-         setIsSubmitting(false);
-      } else {
-         if (type === 'login') {
-            (userData.email.isValid && userData.password.isValid) ? setDisabled(false) : setDisabled(true);
-         } else {
-            isValid ? setDisabled(false) : setDisabled(true);
-         }
+         setIsServerError(true);
       }
-      
-      if (location.pathname !== (type === 'register' ? '/sign-up' : '/sign-in')) {
-         // Сброс ошибок и данных формы при смене маршрута
-         setUserData({
-            name: {
-               value: '',
-               isValid: false,
-               errorMessage: ''
-            },
-            email: {
-               value: '',
-               isValid: false,
-               errorMessage: ''
-            },
-            password: {
-               value: '',
-               isValid: false,
-               errorMessage: ''
-            }
-         });
-      }
-   }, [isValid, userData.email.isValid, userData.password.isValid, type, serverError, location]);
+   }, [serverError]);
 
-   // Регулярные выражения для валидации
-   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-   const nameRegex = /^[a-zA-Zа-яА-Я\s-]+$/;
+   // Проверка валидности формы
+   const isFormValid =
+      type === 'login'
+         ? userData.email.isValid && userData.password.isValid
+         : userData.name.isValid && userData.email.isValid && userData.password.isValid;
 
-   // Обработчик изменений в инпутах
+   const buttonDisabled = isSubmitting || !isFormValid || isServerError;
+
+   // Обработчик изменения полей ввода
    const handleChange = (evt) => {
       const { name, value, validity, validationMessage } = evt.target;
-
       let isValidInput = validity.valid;
       let errorMessage = validationMessage;
 
-      if (name === 'email' && !emailRegex.test(value)) {
+      if (name === 'email' && !EMAIL_REGEX.test(value)) {
          isValidInput = false;
          errorMessage = 'Некорректный формат электронной почты';
-      } else if (name === 'name' && !nameRegex.test(value)) {
+      } else if (name === 'name' && !NAME_REGEX.test(value)) {
          isValidInput = false;
          errorMessage = 'Имя может содержать только латиницу, кириллицу, пробел или дефис';
       }
 
-      setUserData(prevState => ({
+      setUserData((prevState) => ({
          ...prevState,
-         [name]: {
-            ...userData[name],
-            value,
-            isValid: isValidInput,
-            errorMessage
-         }
+         [name]: { ...prevState[name], value, isValid: isValidInput, errorMessage },
       }));
-      setServerError("");
-      setDisabled(false);
+
+      setIsServerError(false);
+      setServerError('');
    };
 
    // Обработчик отправки формы
    const handleSubmit = (evt) => {
       evt.preventDefault();
-      setIsSubmitting(true);  // Блокировка формы при начале отправки
+      setIsSubmitting(true);
       onSubmit({
          name: userData.name.value,
          email: userData.email.value,
-         password: userData.password.value
-      });
-   }
+         password: userData.password.value,
+      })
+         .finally(() => {
+            setIsSubmitting(false);
+         });
+   };
 
    return (
       <div className='auth-form'>
@@ -158,7 +114,7 @@ function AuthForm({ type, onSubmit, serverError, setServerError }) {
                   <button
                      className='auth-form__button'
                      type='submit'
-                     disabled={disabled || isSubmitting}
+                     disabled={buttonDisabled}
                   >
                      {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
                   </button>
