@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import logo from '../../images/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 
-function AuthForm({ type, onSubmit, serverError }) {
+function AuthForm({ type, onSubmit, serverError, setServerError }) {
    // Состояние для хранения данных пользователя и валидации
    const [userData, setUserData] = useState({
       name: {
@@ -21,6 +21,10 @@ function AuthForm({ type, onSubmit, serverError }) {
          errorMessage: ''
       }
    });
+
+   // Состояние, чтобы блокировать форму во время отправки данных на сервер
+   const [isSubmitting, setIsSubmitting] = useState(false);
+
    const location = useLocation();
 
    // Определение активности кнопки отправки
@@ -28,8 +32,9 @@ function AuthForm({ type, onSubmit, serverError }) {
    const [disabled, setDisabled] = useState(true);
 
    useEffect(() => {
+      // Если на странице возникла ошибка сервера, сбрасываем блокировку кнопки
       if (serverError) {
-         setDisabled(true);
+         setIsSubmitting(false);
       } else {
          if (type === 'login') {
             (userData.email.isValid && userData.password.isValid) ? setDisabled(false) : setDisabled(true);
@@ -37,8 +42,9 @@ function AuthForm({ type, onSubmit, serverError }) {
             isValid ? setDisabled(false) : setDisabled(true);
          }
       }
-      // Если пользователь перешел на другую страницу (регистрация/вход), сбрасываем ошибки и данные формы
+      
       if (location.pathname !== (type === 'register' ? '/sign-up' : '/sign-in')) {
+         // Сброс ошибок и данных формы при смене маршрута
          setUserData({
             name: {
                value: '',
@@ -87,11 +93,14 @@ function AuthForm({ type, onSubmit, serverError }) {
             errorMessage
          }
       }));
+      setServerError("");
+      setDisabled(false);
    };
 
    // Обработчик отправки формы
    const handleSubmit = (evt) => {
       evt.preventDefault();
+      setIsSubmitting(true);  // Блокировка формы при начале отправки
       onSubmit({
          name: userData.name.value,
          email: userData.email.value,
@@ -149,7 +158,7 @@ function AuthForm({ type, onSubmit, serverError }) {
                   <button
                      className='auth-form__button'
                      type='submit'
-                     disabled={disabled}
+                     disabled={disabled || isSubmitting}
                   >
                      {type === 'register' ? 'Зарегистрироваться' : 'Войти'}
                   </button>

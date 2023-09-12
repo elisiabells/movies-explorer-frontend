@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Profile from '../Profile/Profile';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
@@ -33,11 +33,11 @@ function App() {
   const [serverError, setServerError] = useState('');
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
-
+  const [userSessionChanged, setUserSessionChanged] = useState(false);
 
   // // Функция регистрации
   const handleRegister = ({ name, email, password }) => {
-    authApi
+    return authApi
       .signup({ name, email, password })
       .then(() => {
         handleLogin({ email, password });
@@ -50,11 +50,12 @@ function App() {
 
   // Функция входа
   const handleLogin = ({ email, password }) => {
-    authApi.signin(email, password)
+    return authApi.signin(email, password)
       .then((data) => {
         if (data) {
           localStorage.setItem('jwt', data.token);
           setLoggedIn(true);
+          setUserSessionChanged(prev => !prev);
           navigate('/movies');
           return mainApi.getCurrentUser();
         }
@@ -70,9 +71,17 @@ function App() {
       });
   };
 
+  // Что бы не открывал sigin/signuo для авторизованных
+  useEffect(() => {
+    if (loggedIn && (location.pathname === '/sign-in' || location.pathname === '/sign-up')) {
+      navigate('/movies');
+    }
+  }, [loggedIn, location.pathname, navigate]);
+
+
   // Функция обновления профиля
   const handleUpdateProfile = ({ email, name }) => {
-    mainApi.updateUser({ email, name })
+    return mainApi.updateUser({ email, name })
       .then((updatedUser) => {
         setCurrentUser(updatedUser);
         setShowPopup(true);
@@ -88,6 +97,7 @@ function App() {
     localStorage.clear();
 
     setLoggedIn(false);
+    setUserSessionChanged(prev => !prev);
     setCurrentUser(null);
     setError(null);
     setAllMovies([]);
@@ -128,7 +138,7 @@ function App() {
         setError('Ошибка при загрузке фильмов');
         setIsLoading(false);
       });
-  }, []);
+  }, [userSessionChanged]);
 
   // Получение сохраненных фильмов
   useEffect(() => {
@@ -139,7 +149,7 @@ function App() {
       .catch((err) => {
         console.error('Ошибка при получении сохраненных фильмов: ', err);
       });
-  }, []);
+  }, [userSessionChanged]);
 
   // Сохранение фильма 
   const handleSaveMovie = (movie) => {
@@ -247,6 +257,7 @@ function App() {
                 onLogin={handleLogin}
                 serverError={loginError}
                 location={location}
+                setServerError={setLoginError}
               />
             }
           />
@@ -256,12 +267,11 @@ function App() {
                 onRegister={handleRegister}
                 serverError={registerError}
                 location={location}
+                setServerError={setRegisterError}
               />
             }
           />
-
-          <Route path='/not-found' element={<NotFound />} />
-          <Route path='*' element={<Navigate to='/not-found' />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         {!hideForFooter.includes(location.pathname) && <Footer />}
         <InfoTooltip

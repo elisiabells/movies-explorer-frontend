@@ -32,8 +32,13 @@ function MoviesCardList({ movies, onSave, savedMovies, onDelete, isSavedMoviePag
     const currentCount = displayedMovies.length;
     const width = window.innerWidth;
     let additionalCount;
-    if (width >= 1280 || width >= 768) additionalCount = 6;
-    else additionalCount = 2;
+
+    if (width >= 1161) {
+      additionalCount = 3;
+    } else {
+      additionalCount = 2;
+    }
+
     setDisplayedMovies(movies.slice(0, currentCount + additionalCount));
   };
 

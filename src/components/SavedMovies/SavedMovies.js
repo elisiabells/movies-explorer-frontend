@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SearchForm from '../Movies/SearchForm/SearchForm';
-import MovieCard from '../Movies/MoviesCard/MoviesCard';
+import MoviesCardList from '../Movies/MoviesCardList/MoviesCardList';
 import Preloader from '../Preloader/Preloader';
 import filterMovies from '../../utils/filterMovies';
 
@@ -36,28 +36,24 @@ function SavedMovies({ savedMovies, onDelete, isLoading, error }) {
       return <p>Ничего не найдено</p>;
     }
     return (
-      <div className="movies-card-list__container">
-        {filteredMovies.map(movie => (
-          <MovieCard
-            key={movie._id}
-            movie={movie}
-            isSavedMoviePage={true}
-            onDelete={onDelete}
-          />
-        ))}
-      </div>
+      <MoviesCardList
+        movies={filteredMovies}
+        onDelete={onDelete}
+        isSavedMoviePage={true}
+        savedMovies={savedMovies}
+      />
     );
   };
 
   return (
-    <div className='saved-movies'>
+    <section className='saved-movies'>
       <SearchForm
         onSearch={handleSearch}
         isChecked={isShortMovies}
         setChecked={handleCheckboxChange}
       />
       {renderContent()}
-    </div>
+    </section>
   );
 }
 

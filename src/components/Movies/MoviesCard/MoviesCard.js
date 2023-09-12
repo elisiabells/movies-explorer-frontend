@@ -1,34 +1,9 @@
 import React from 'react';
 
 function MovieCard({ movie, isSavedMoviePage, onSave, onDelete, savedMovies }) {
-  // console.log("savedMovies из муви кард:", movie);
-
   const baseUrl = "https://api.nomoreparties.co/";
   const imageUrl = isSavedMoviePage ? movie.image : baseUrl + movie.image.url;
-
-  // const isSaved = !isSavedMoviePage && savedMovies.some((item) => item.movieId === movie.id);
-
-  // const isSaved = !isSavedMoviePage && savedMovies.some((item) => {
-  //   console.log("item из муви кард:", item); 
-  //   console.log("movie из муви кард:", movie); 
-  //   return item.movieId === movie.id;
-  //   ;
-  // });
-
-  if (!movie) {
-    console.error("Movie is undefined:", movie);
-    return null;
-  }
-
-  const isSaved = !isSavedMoviePage && savedMovies.some((item) => {
-    console.log('Checking item:', item);
-    if (!item || !item.movieId) {
-      console.error("Item is undefined or doesn't have a 'movieId' property:", item);
-      return false;
-    }
-    return item.movieId === movie.id;
-  });
-
+  const isSaved = !isSavedMoviePage && savedMovies.some(item => item?.movieId === movie.id);
 
   // Сохранить
   function handleSave() {
