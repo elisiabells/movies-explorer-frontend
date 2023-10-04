@@ -1,0 +1,116 @@
+.search-form {
+   border-bottom: 1px solid #E8E8E8;
+   margin: 0 auto;
+   width: 90%;
+}
+
+.search-form__container {
+   max-width: 1140px;
+   height: 72px;
+   display: flex;
+   align-items: center;
+   margin: 70px auto;
+   box-shadow: 0px 3px 14px 0px #00000014;
+   border-radius: 9px;
+}
+
+.search-form__content {
+   display: flex;
+   align-items: center;
+   width: 78.5%;
+   border-right: 1px solid #CBCBCB;
+   margin-left: 18px;
+}
+
+.search-form__input {
+   color: #A0A0A0;
+   font-size: 18px;
+   font-weight: 400;
+   line-height: 20px;
+   border: none;
+   padding: 0;
+   margin-left: 10px;
+   width: 100%;
+}
+
+.search-form__input:focus {
+   outline: none;
+   color: #000;
+   box-shadow: 0 0 5px #F4C2C2;
+}
+
+.search-form__button {
+   font-size: 11px;
+   font-weight: 500;
+   line-height: 18px;
+   text-align: center;
+   color: #fff;
+   background-color: #000;
+   border: none;
+   border-radius: 30px;
+   padding: 8px 13px 8px;
+   margin-right: 18px;
+}
+
+.search-form__button:hover {
+   opacity: 0.8;
+   transition: opacity 0.2s;
+   cursor: pointer;
+}
+
+.search-form__error {
+   position: absolute;
+   top: 235px;
+   margin: 0;
+   margin-left: 10px;
+   color: #FF4062;
+   font-size: 15px;
+   font-weight: 400;
+}
+
+@media (max-width: 1100px) {
+   .search-form__content {
+      width: 75%;
+   }
+}
+
+@media (max-width: 930px) {
+   .search-form__container {
+      margin: 80px auto 110px;
+   }
+
+   .search-form__content {
+      width: 70%;
+      margin-left: 10px;
+   }
+}
+
+@media (max-width: 600px) {
+   .search-form__container {
+      flex-direction: column;
+      box-shadow: none;
+      margin: 80px auto 110px;
+      gap: 45px;
+   }
+
+   .search-form__content {
+      border: none;
+      box-shadow: 0px 3px 14px 0px #00000014;
+      border-radius: 9px;
+      width: 100%;
+   }
+
+   .search-form__icon {
+      display: none;
+   }
+
+   .search-form__input {
+      font-size: 14px;
+      margin-left: 5px;
+   }
+
+   .search-form__button {
+      margin-top: 20px;
+      margin-bottom: 20px;
+   }
+}

@@ -1,0 +1,112 @@
+.info-tooltip {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: rgba(0, 0, 0, 0.5);
+   visibility: hidden;
+   opacity: 0;
+   transition: opacity 0.3s ease-in-out;
+}
+
+.info-tooltip_opened {
+   visibility: visible;
+   opacity: 1;
+}
+
+.info-tooltip__content {
+   position: relative;
+   padding: 20px;
+   background-color: white;
+   border-radius: 10px;
+   box-shadow: 0 0 20px #f4c2c2;
+   text-align: center;
+   width: 35%;
+   height: 40%;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   gap: 30px;
+}
+
+.info-tooltip__image {
+   width: 50px;
+   margin-bottom: 10px;
+}
+
+.info-tooltip__message {
+   margin: 0;
+   font-size: 20px;
+   font-weight: 500;
+}
+
+.info-tooltip__close-button {
+   background-image: url(../../images/burger-menu-close.svg);
+   background-color: transparent;
+   background-size: cover;
+   border: none;
+   width: 30px;
+   height: 30px;
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   padding: 0;
+   cursor: pointer;
+}
+
+@media screen and (max-width: 850px) {
+   .info-tooltip__content {
+      width: 40%;
+      height: 35%;
+      padding: 20px;
+   }
+
+   .info-tooltip__message {
+      font-size: 18px;
+   }
+
+   .info-tooltip__close-button {
+      width: 28px;
+      height: 28px;
+   }
+}
+
+@media screen and (max-width: 630px) {
+   .info-tooltip__message {
+      font-size: 15px;
+   }
+}
+
+@media screen and (max-width: 525px) {
+   .info-tooltip__content {
+      gap: 16px;
+   }
+}
+
+@media screen and (max-width: 420px) {
+   .info-tooltip__content {
+      width: 50%;
+      height: 30%;
+      gap: 25px;
+   }
+
+   .info-tooltip__message {
+      font-size: 13px;
+   }
+
+   .info-tooltip__close-button {
+      width: 25px;
+      height: 25px;
+   }
+}
+
+@media screen and (max-width: 364px) {
+   .info-tooltip__message {
+      font-size: 11px;
+   }
+}

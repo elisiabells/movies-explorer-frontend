@@ -1,0 +1,102 @@
+.promo {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 100%;
+   height: 590px;
+   background-color: #F3C1F8;
+   margin-top: -1px;
+}
+
+.promo__cover-container {
+   position: relative;
+}
+
+.promo__cover-logo {
+   width: 320px;
+   height: 320px;
+   display: block;
+   margin-top: 80px;
+}
+
+.promo__title {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   font-weight: 400;
+   font-size: 50px;
+   line-height: 58px;
+   text-align: center;
+   letter-spacing: -0.04em;
+   width: 730px;
+   margin: 40px 0 0;
+}
+
+@media (max-width: 768px) {
+   .promo {
+      height: 850px;
+   }
+
+   .promo__cover-logo {
+      margin-top: 235px;
+   }
+
+   .promo__title {
+      margin-top: 104px;
+      width: 670px;
+   }
+}
+
+@media (max-width: 700px) {
+   .promo__title {
+      width: 560px;
+   }
+
+}
+
+@media (max-width: 600px) {
+   .promo {
+      height: 700px;
+   }
+
+   .promo__title {
+      width: 480px;
+      font-size: 38px;
+      line-height: 48px;
+   }
+
+   .promo__cover-logo {
+      margin-top: 120px;
+   }
+
+   .promo__title {
+      margin-top: 80px;
+   }
+}
+
+@media (max-width: 500px) {
+   .promo__title {
+      width: 320px;
+   }
+}
+
+@media (max-width: 320px) {
+   .promo {
+      height: 636px;
+   }
+
+   .promo__cover-logo {
+      width: 248px;
+      height: 248px;
+      margin-top: 143px;
+   }
+
+   .promo__title {
+      font-size: 31px;
+      line-height: 39px;
+      letter-spacing: -0.04em;
+      width: 300px;
+      margin-top: 70px;
+   }
+}
