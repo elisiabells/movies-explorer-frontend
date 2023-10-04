@@ -8,6 +8,3 @@
 
 ## Приложение 
 [Movies Explorer](http://moviesbyelisiabells.nomoreparties.co/)
-
-## Пулреквест
-https://github.com/elisiabells/movies-explorer-frontend/pull/2
