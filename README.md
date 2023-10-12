@@ -13,6 +13,10 @@
 - Верстка выполнена в соответствии с макетом `light-4`.
 - [Смотреть макет в Figma](https://www.figma.com/file/6FMWkB94wE7KTkcCgUXtnC/light-1?type=design&node-id=1%3A2798&mode=dev)
 
+## Api:
+- Собственное API можно посмотреть в репозитории [movies-explorer-api](https://github.com/elisiabells/movies-explorer-api)
+- Сторонее API [BeatfilmMoviesApi](https://api.nomoreparties.co/beatfilm-movies)
+
 ### Стек Технологий:
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)&nbsp;
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)&nbsp;
